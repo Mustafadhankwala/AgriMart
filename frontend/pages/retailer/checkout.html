@@ -8,24 +8,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout | AgriRetail</title>
   <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/i18n.js"></script>
   <script src="../../js/shell.js"></script>
 </head>
 <body data-page="checkout">
   <script>
-    document.body.insertAdjacentHTML("afterbegin", dashboardShell("Checkout", "Cash Checkout", "Confirm pickup details. No online payment is collected.", `
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("cart", "Cash Checkout", "Confirm pickup details for your order.", `
       <section class="split-grid">
         <form class="panel form-grid" id="checkoutForm">
-          <div class="panel-head field full"><h2>Pickup Details</h2><span class="pill">Cash payment</span></div>
-          <div class="field"><label for="buyerName">Retailer name</label><input id="buyerName" required><span class="error"></span></div>
-          <div class="field"><label for="phone">Phone</label><input id="phone" required><span class="error"></span></div>
-          <div class="field"><label for="pickupDate">Pickup date</label><input id="pickupDate" type="date" required><span class="error"></span></div>
-          <div class="field"><label for="slot">Slot</label><select id="slot" required><option value="">Select slot</option><option>Morning</option><option>Afternoon</option><option>Evening</option></select><span class="error"></span></div>
-          <div class="field full"><label for="address">Pickup / delivery note</label><textarea id="address" required></textarea><span class="error"></span></div>
-          <div class="field full"><button class="btn primary" type="submit">Place Cash Order</button></div>
+          <div class="panel-head field full"><h2 data-i18n="hdr_pickup_details">Pickup Details</h2><span class="pill" data-i18n="lbl_cash_payment">Cash payment</span></div>
+          <div class="field"><label for="buyerName" data-i18n="lbl_retailer_name">Retailer name</label><input id="buyerName" required><span class="error"></span></div>
+          <div class="field"><label for="phone" data-i18n="lbl_phone">Phone</label><input id="phone" required><span class="error"></span></div>
+          <div class="field"><label for="pickupDate" data-i18n="lbl_pickup_date">Pickup date</label><input id="pickupDate" type="date" required><span class="error"></span></div>
+          <div class="field"><label for="slot" data-i18n="lbl_slot">Slot</label><select id="slot" required><option value="" data-i18n="opt_select_slot">Select slot</option><option data-i18n="opt_morning">Morning</option><option data-i18n="opt_afternoon">Afternoon</option><option data-i18n="opt_evening">Evening</option></select><span class="error"></span></div>
+          <div class="field full"><label for="deliveryAddress" data-i18n="lbl_address">Delivery Address</label><textarea id="deliveryAddress" required></textarea><span class="error"></span></div>
+          <div class="field full"><label for="address" data-i18n="lbl_pickup_note">Pickup / delivery note</label><textarea id="note" required></textarea><span class="error"></span></div>
+          <div class="field full"><button class="btn primary" type="submit" data-i18n="btn_place_order">Place Cash Order</button></div>
         </form>
-        <aside class="panel"><div class="panel-head"><h2>Review</h2></div><div id="checkoutReview"></div></aside>
+        <aside class="panel"><div class="panel-head"><h2 data-i18n="hdr_review">Review</h2></div><div id="checkoutReview"></div></aside>
       </section>
-    `));
+    `, "hdr_retailer_checkout", "sub_retailer_checkout", "nav_checkout"));
   </script>
   <script src="../../js/app.js"></script>
 </body>

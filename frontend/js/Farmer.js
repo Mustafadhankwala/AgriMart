@@ -108,14 +108,17 @@ function getCategoryIcon(category) {
 
 function buildProductCardHtml(product) {
   const icon = getCategoryIcon(product.category);
+  const isOutOfStock = Number(product.quantity) <= 0;
   return `<div class="product-card">
         <div class="product-thumb">${product.image ? `<img src="${resolveImageUrl(product.image)}" alt="${product.name}">` : icon}</div>
         <div class="product-info">
           <div class="product-name">${product.name}</div>
           <div class="product-price">₹${Number(product.price).toLocaleString('en-IN')}/${product.unit || 'kg'}</div>
-          <div class="product-stock">Stock: ${product.quantity} ${product.unit || 'kg'}</div>
+          <div class="product-stock" style="${isOutOfStock ? 'color:var(--red);' : ''}">
+            ${isOutOfStock ? '<span data-i18n="stat_out_stock">Out of Stock</span>' : `<span data-i18n="lbl_stock_count">Stock:</span> ${product.quantity} ${product.unit || 'kg'}`}
+          </div>
           <div class="product-actions">
-            <button class="btn-sm edit"><i class='bx bx-edit'></i> Edit</button>
+            <button class="btn-sm edit"><i class='bx bx-edit'></i> <span data-i18n="btn_edit_sm">Edit</span></button>
             <button class="btn-sm del"><i class='bx bx-trash'></i></button>
           </div>
         </div>
@@ -129,12 +132,14 @@ async function loadFarmerProducts() {
   const auth = getAuth();
   if (!auth?.user?._id) return;
 
-  productGrid.innerHTML = '<div style="padding:20px;color:#888;">Loading products...</div>';
+  productGrid.innerHTML = '<div style="padding:20px;color:#888;" data-i18n="state_loading_products">Loading products...</div>';
+  if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
 
   try {
     const response = await apiRequest(`/products?limit=50&farmer=${auth.user._id}`);
     if (!response.ok) {
-      productGrid.innerHTML = '<div style="padding:20px;color:#ef4444;">Failed to load products.</div>';
+      productGrid.innerHTML = '<div style="padding:20px;color:#ef4444;" data-i18n="state_failed_load">Failed to load products.</div>';
+      if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
       return;
     }
     const payload = await response.json();
@@ -151,15 +156,18 @@ async function loadFarmerProducts() {
     if (ratingEl) ratingEl.textContent = products.length > 0 ? '4.8★' : '0.0★';
 
     if (!products.length) {
-      productGrid.innerHTML = '<div style="padding:20px;color:#888;">No products listed yet. Click “Add Product” to get started.</div>';
+      productGrid.innerHTML = '<div style="padding:20px;color:#888;" data-i18n="state_no_products">No products listed yet. Click “Add Product” to get started.</div>';
+      if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
       return;
     }
 
     productGrid.innerHTML = products.map((p, i) => buildProductCardHtml(p, i)).join('');
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
     attachProductCardListeners(productGrid, products);
   } catch (error) {
     console.error('Unable to load farmer products', error);
-    productGrid.innerHTML = '<div style="padding:20px;color:#ef4444;">Error loading products.</div>';
+    productGrid.innerHTML = '<div style="padding:20px;color:#ef4444;" data-i18n="state_failed_load">Error loading products.</div>';
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
   }
 }
 
@@ -389,10 +397,13 @@ function renderRecentOrders(orders = []) {
   const count = document.getElementById('recentOrderCount');
   if (!table) return;
 
-  if (count) count.textContent = `${orders.length} orders`;
+  if (count) {
+    count.innerHTML = `<span id="recentOrderCountVal">${orders.length}</span> <span data-i18n="lbl_orders_count">orders</span>`;
+  }
 
   if (!orders.length) {
-    table.innerHTML = '<tr><td colspan="6">No orders received yet.</td></tr>';
+    table.innerHTML = '<tr><td colspan="6" data-i18n="state_no_orders">No orders received yet.</td></tr>';
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
     return;
   }
 
@@ -417,10 +428,11 @@ function renderRecentOrders(orders = []) {
       <td>${order.retailer?.name || 'Retailer'}</td>
       <td>${order.quantity} ${order.product?.unit || 'kg'}</td>
       <td>${formatCurrency(order.totalPrice)}</td>
-      <td><span class="badge-status ${statusClass(order.orderStatus)}">${order.orderStatus}</span></td>
+      <td><span class="badge-status ${statusClass(order.orderStatus)}" data-i18n="sub_${order.orderStatus}">${order.orderStatus}</span></td>
       <td>${actionBtn}</td>
     </tr>`;
   }).join('');
+  if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
 }
 
 function renderTopProducts(products = []) {
@@ -428,7 +440,8 @@ function renderTopProducts(products = []) {
   if (!list) return;
 
   if (!products.length) {
-    list.innerHTML = '<div class="empty-analytics">No top products yet. Delivered or accepted orders will appear here.</div>';
+    list.innerHTML = '<div class="empty-analytics" data-i18n="state_no_top_products">No top products yet. Delivered or accepted orders will appear here.</div>';
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
     return;
   }
 
@@ -439,6 +452,7 @@ function renderTopProducts(products = []) {
     </div>
     <div class="analytics-value">${formatCurrency(product.totalRevenue)}</div>
   </div>`).join('');
+  if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
 }
 
 async function loadFarmerDashboardAnalytics() {
@@ -464,9 +478,15 @@ async function loadFarmerDashboardAnalytics() {
       document.getElementById('dashTotalRevenue') && (document.getElementById('dashTotalRevenue').textContent = formatCurrency(stats.totalRevenue));
       document.getElementById('dashDeliveredOrders') && (document.getElementById('dashDeliveredOrders').textContent = Number(stats.deliveredOrders || 0).toLocaleString('en-IN'));
       document.getElementById('dashTotalProducts') && (document.getElementById('dashTotalProducts').textContent = Number(stats.totalProducts || 0).toLocaleString('en-IN'));
-      document.getElementById('dashPendingOrders') && (document.getElementById('dashPendingOrders').textContent = `${stats.pendingOrders || 0} pending`);
-      document.getElementById('dashLowStockCount') && (document.getElementById('dashLowStockCount').textContent = `${stats.lowStockCount || 0} low stock`);
-      document.getElementById('lowStockThreshold') && (document.getElementById('lowStockThreshold').textContent = `Threshold ${stats.lowStockThreshold}`);
+      
+      const pendingEl = document.getElementById('dashPendingOrders');
+      if (pendingEl) pendingEl.textContent = stats.pendingOrders || 0;
+      
+      const lowStockEl = document.getElementById('dashLowStockCount');
+      if (lowStockEl) lowStockEl.textContent = stats.lowStockCount || 0;
+
+      const thresholdEl = document.getElementById('lowStockThreshold');
+      if (thresholdEl) thresholdEl.innerHTML = `<span data-i18n="sub_threshold">Threshold</span> ${stats.lowStockThreshold}`;
 
       renderMonthlySales(stats.monthlySales || []);
       renderStatusDistribution(stats.statusDistribution || {});
@@ -760,7 +780,7 @@ async function loadTeamMembers() {
     
     const members = teamPayload.data || [];
     const owner = profilePayload.data || {};
-
+    
     // Combine owner with team members
     const ownerEntry = {
       _id: 'owner',
@@ -785,22 +805,24 @@ async function loadTeamMembers() {
           <td>${m.role}</td>
           <td>${m.phone}</td>
           <td>${joinDate}</td>
-          <td><span class="badge-status ${statusClass}">${m.status}</span></td>
+          <td><span class="badge-status ${statusClass}" data-i18n="sub_${m.status.toLowerCase().replace(' ', '_')}">${m.status}</span></td>
           <td style="display:flex;gap:6px;">
             ${!m.isOwner ? `
-              <button class="btn-sm edit" style="flex:none;padding:5px 10px;" onclick="openAssignRole(this, '${m._id}', '${m.name}', '${m.role}')"><i class='bx bx-transfer'></i> Role</button>
+              <button class="btn-sm edit" style="flex:none;padding:5px 10px;" onclick="openAssignRole(this, '${m._id}', '${m.name}', '${m.role}')"><i class='bx bx-transfer'></i> <span data-i18n="lbl_role">Role</span></button>
               <button class="btn-sm del" style="flex:none;padding:5px 10px;" onclick="removeMember('${m._id}', '${m.name}')"><i class='bx bx-trash'></i></button>
             ` : `
-              <button class="btn-sm edit" style="flex:none;padding:5px 10px;" onclick="goTo('profile')"><i class='bx bx-user'></i> Profile</button>
+              <button class="btn-sm edit" style="flex:none;padding:5px 10px;" onclick="goTo('profile')"><i class='bx bx-user'></i> <span data-i18n="nav_profile">Profile</span></button>
             `}
           </td>
         </tr>
       `;
     }).join('');
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
 
   } catch (err) {
     console.error('Team Load Error:', err);
-    tableBody.innerHTML = '<tr><td colspan="6" style="padding:40px; text-align:center; color:#ef4444;">Error loading team members. Please refresh.</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6" style="padding:40px; text-align:center; color:#888;" data-i18n="state_failed_load">Error loading team members. Please refresh.</td></tr>';
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
   }
 }
 
@@ -898,33 +920,38 @@ document.getElementById('deleteConfirmModal')?.addEventListener('click', (e) => 
 });
 
 // ── NOTIFICATIONS — MARK ALL READ ─────────────────────────
-document.getElementById('markAllReadBtn')?.addEventListener('click', () => {
-  const list = document.getElementById('notifList');
-  if (!list) return;
+document.getElementById('markAllReadBtn')?.addEventListener('click', async () => {
+  try {
+    const response = await apiRequest('/notifications/mark-all-read', { method: 'PUT' });
+    if (!response.ok) {
+      showFarmerToast('Failed to mark notifications as read.');
+      return;
+    }
 
-  const items = list.querySelectorAll('.notif-item');
-  if (!items.length) {
-    showFarmerToast('No notifications to clear.');
-    return;
+    const list = document.getElementById('notifList');
+    if (list) {
+      const items = list.querySelectorAll('.notif-item');
+      items.forEach((item, i) => {
+        item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+        item.style.transitionDelay = `${i * 30}ms`;
+        item.style.opacity = '0';
+        item.style.transform = 'translateX(20px)';
+      });
+
+      setTimeout(() => {
+        list.innerHTML = `<div style="padding:40px; text-align:center; color:#888;">
+          <i class='bx bx-bell-off' style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+          <span data-i18n="state_no_notif">No active notifications from your store.</span>
+        </div>`;
+        if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
+        updateNotificationBadge();
+        showFarmerToast('All notifications marked as read.');
+      }, items.length > 0 ? (items.length * 30 + 350) : 100);
+    }
+  } catch (err) {
+    console.error('Mark all read failed:', err);
+    showFarmerToast('Error clearing notifications.');
   }
-
-  // Fade out all items then clear
-  items.forEach((item, i) => {
-    item.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-    item.style.transitionDelay = `${i * 60}ms`;
-    item.style.opacity = '0';
-    item.style.transform = 'translateX(20px)';
-  });
-
-  const total = items.length * 60 + 350;
-  setTimeout(() => {
-    list.innerHTML = `<div style="padding:32px;text-align:center;color:#888;">
-      <i class='bx bxs-check-circle' style="font-size:48px;color:var(--green);display:block;margin-bottom:8px;"></i>
-      All caught up! No new notifications.
-    </div>`;
-    updateNotifBadge(0);
-    showFarmerToast('All notifications marked as read.');
-  }, total);
 });
 
 // ── PROFILE PAGE ──────────────────────────────────────────
@@ -1079,28 +1106,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('saveFarmDetailsBtn')?.addEventListener('click', handleSaveFarmDetails);
     document.getElementById('cancelPersonalInfoBtn')?.addEventListener('click', loadFarmerProfile);
     
-    startNotificationPolling();
+    // Dashboard & Notifications init
+    loadFarmerDashboardAnalytics();
+    updateNotificationBadge();
+    loadFarmerNotifications();
+
+    setInterval(() => {
+        loadFarmerDashboardAnalytics();
+        updateNotificationBadge();
+        loadFarmerNotifications();
+    }, 30000); // 30s polling
     console.log('Farmer.js ready');
   } catch (err) {
     console.warn('Initialization issue:', err.message);
   }
 });
 
-// ── REAL-TIME NOTIFICATIONS (POLLING) ─────────────────────
-const NOTIF_SEEN_KEY  = 'agrifarmer_seen_orders';
-const POLL_INTERVAL   = 20000; // 20 seconds
-
-function getSeenOrderIds() {
-  try { return new Set(JSON.parse(localStorage.getItem(NOTIF_SEEN_KEY) || '[]')); }
-  catch { return new Set(); }
-}
-
-function saveSeenOrderIds(set) {
-  // Keep only last 200 to avoid unbounded growth
-  const arr = [...set].slice(-200);
-  localStorage.setItem(NOTIF_SEEN_KEY, JSON.stringify(arr));
-}
-
+// ── REAL-TIME NOTIFICATIONS ─────────────────────
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins  = Math.floor(diff / 60000);
@@ -1112,121 +1134,70 @@ function timeAgo(dateStr) {
   return `${days} day${days > 1 ? 's' : ''} ago`;
 }
 
-function updateNotifBadge(count) {
-  const badge = document.querySelector('.nav-btn .badge');
+async function updateNotificationBadge() {
+  const badge = document.getElementById('notifBadge');
   if (!badge) return;
-  badge.textContent = count > 0 ? count : '';
-  badge.style.display = count > 0 ? 'flex' : 'none';
-}
 
-function prependNotification(title, desc, time, orderId = null) {
-  const list = document.getElementById('notifList');
-  if (!list) return;
-
-  // Remove "all caught up" placeholder if present
-  const placeholder = list.querySelector('div[style]');
-  if (placeholder) placeholder.remove();
-
-  const item = document.createElement('div');
-  item.className = 'notif-item';
-  item.style.opacity = '0';
-  item.style.transform = 'translateX(-20px)';
-  item.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
-  item.innerHTML = `
-    <div class="notif-dot"></div>
-    <div style="flex:1;">
-      <div class="notif-title">${title}</div>
-      <div class="notif-desc">${desc}</div>
-      <div class="notif-time">${time}</div>
-      ${orderId ? `
-        <div class="notif-actions" style="margin-top:10px; display:flex; gap:8px;">
-          <button class="btn-sm edit" style="padding:4px 12px; font-size:12px;" onclick="handleNotifStatus('${orderId}', 'accepted', this)">Accept</button>
-          <button class="btn-sm del" style="padding:4px 12px; font-size:12px;" onclick="handleNotifStatus('${orderId}', 'cancelled', this)">Cancel</button>
-        </div>
-      ` : ''}
-    </div>`;
-
-  list.prepend(item);
-  // Trigger animation next tick
-  requestAnimationFrame(() => {
-    item.style.opacity = '1';
-    item.style.transform = 'translateX(0)';
-  });
-}
-
-async function pollForNewOrders() {
-  const notifList = document.getElementById('notifList');
-  const badgeEl = document.querySelector('.nav-btn .badge');
-  
   try {
-    const res = await apiRequest('/orders/farmer-orders');
-    if (!res.ok) return;
-    const data = await res.json();
-    const orders = data.data || data || [];
+    const response = await apiRequest('/notifications');
+    if (!response.ok) return;
 
-    const seen = getSeenOrderIds();
-    const isFirstRun = seen.size === 0;
-    
-    // On first run, clear any hardcoded/fake notifications from HTML
-    if (isFirstRun && notifList) {
-      notifList.innerHTML = '';
+    const result = await response.json();
+    const unreadCount = (result.data || []).filter(n => !n.isRead).length;
+
+    if (unreadCount > 0) {
+      badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+      badge.style.display = 'flex';
+    } else {
+      badge.style.display = 'none';
     }
-
-    let newCount = 0;
-
-    // Process orders in reverse (oldest to newest) to maintain correct order when prepending
-    const sortedOrders = [...orders].sort((a,b) => new Date(a.createdAt) - new Date(b.createdAt));
-
-    sortedOrders.forEach(order => {
-      const isNew = !seen.has(order._id);
-      if (!isNew) return;
-      
-      seen.add(order._id);
-
-      const productName  = order.product?.name || 'a product';
-      const retailerName = order.retailer?.name || 'A retailer';
-      const amount       = formatCurrency(order.totalPrice);
-      const qty          = `${order.quantity} ${order.product?.unit || 'kg'}`;
-      const when         = timeAgo(order.createdAt);
-
-      const title = `New Order Received 🎉`;
-      const desc  = `${retailerName} ordered ${qty} of ${productName} — ${amount}`;
-
-      // Only show toast and increment badge if not the very first load
-      if (!isFirstRun) {
-        newCount++;
-        showFarmerToast(`📦 New order: ${productName} from ${retailerName}`);
-      }
-
-      prependNotification(title, desc, when, order._id);
-    });
-
-    saveSeenOrderIds(seen);
-
-    if (!isFirstRun && newCount > 0) {
-      const current = parseInt(badgeEl?.textContent || '0', 10) || 0;
-      updateNotifBadge(current + newCount);
-    }
-
-    if (isFirstRun) {
-      const pendingCount = orders.filter(o => o.orderStatus === 'pending').length;
-      updateNotifBadge(pendingCount);
-    }
-
-  } catch (err) {
-    console.warn('Notification poll failed:', err.message);
+  } catch (error) {
+    console.error('Failed to update notification badge:', error);
   }
 }
 
-function startNotificationPolling() {
-  // Run immediately on load, then repeat
-  pollForNewOrders();
-  setInterval(pollForNewOrders, POLL_INTERVAL);
+async function loadFarmerNotifications() {
+  const notifList = document.getElementById('notifList');
+  if (!notifList) return;
+
+  try {
+    const response = await apiRequest('/notifications');
+    if (!response.ok) return;
+
+    const result = await response.json();
+    const notifications = result.data || [];
+
+    if (notifications.length === 0) {
+      notifList.innerHTML = `<div style="padding:40px; text-align:center; color:#888;">
+        <i class='bx bx-bell-off' style="font-size:2rem; display:block; margin-bottom:10px;"></i>
+        <span data-i18n="state_no_notif">No active notifications from your store.</span>
+      </div>`;
+    } else {
+      notifList.innerHTML = notifications.map(n => `
+        <div class="notif-item ${n.isRead ? '' : 'unread'}" onclick="markOneAsRead('${n._id}')">
+          <div class="notif-dot" style="${n.isRead ? 'display:none;' : ''}"></div>
+          <div style="flex:1;">
+            <div class="notif-title">${n.title}</div>
+            <div class="notif-desc">${n.message}</div>
+            <div class="notif-time">${timeAgo(n.createdAt)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+    if (typeof applyTranslations === 'function') applyTranslations(localStorage.getItem('agriLang') || 'en');
+  } catch (error) {
+    console.error('Failed to load notifications:', error);
+  }
 }
 
-async function handleNotifStatus(orderId, status, btn) {
-  const actionsDiv = btn.parentElement;
-  await updateOrderStatus(orderId, status, btn);
-  // After successful update, remove the buttons so they can't be clicked again
-  actionsDiv.remove();
+async function markOneAsRead(id) {
+  try {
+    const response = await apiRequest(`/notifications/${id}/read`, { method: 'PUT' });
+    if (response.ok) {
+      updateNotificationBadge();
+      loadFarmerNotifications();
+    }
+  } catch (error) {
+    console.error('Failed to mark notification as read:', error);
+  }
 }

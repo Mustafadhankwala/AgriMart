@@ -20,6 +20,7 @@ const data = {
 };
 
 let products = [];
+let farmers = [];
 let retailerOrders = [];
 let productPagination = { page: 1, pages: 1, total: 0 };
 let productLoadError = "";
@@ -275,7 +276,7 @@ function setupShell() {
   });
 
   // Global Search logic
-  const globalSearch = $("#globalSearch");
+  const globalSearch = $("#globalSearch") || $("#topSearch");
   globalSearch?.addEventListener("keypress", (e) => {
     if (e.key === "Enter") {
       const term = globalSearch.value.trim();
@@ -311,8 +312,6 @@ function productCard(product) {
         <p class="muted">${product.farmer} - ${product.quantity}</p>
         <div class="card-row">
           <span class="price">${money(product.price)}/${product.unit}</span>
-          <button class="btn primary" data-add-cart="${product.id}">Add</button>
-        </div>
           <button class="btn primary" data-add-cart="${product.id}">Add</button>
         </div>
       </div>
@@ -441,8 +440,8 @@ function renderCart() {
   if (!list || !summary) return;
   const cart = getCart();
   if (!cart.length) {
-    list.innerHTML = `<div class="empty-state">Your cart is empty. Add farm products from the marketplace.</div>`;
-    summary.innerHTML = `<div class="summary-line total"><span>Total</span><span>${money(0)}</span></div>`;
+    list.innerHTML = `<div class="empty-state">${t("lbl_empty_cart", "Your cart is empty. Add farm products from the marketplace.")}</div>`;
+    summary.innerHTML = `<div class="summary-line total"><span>${t("lbl_total", "Total")}</span><span>${money(0)}</span></div>`;
     return;
   }
 
@@ -451,23 +450,23 @@ function renderCart() {
       <img src="${item.image}" alt="${item.name}">
       <div>
         <strong>${item.name}</strong>
-        <p class="muted">${item.farmer} - Cash only</p>
+        <p class="muted">${item.farmer} - ${t("lbl_cash_only", "Cash only")}</p>
         <span class="price">${money(item.price)}/${item.unit || "kg"}</span>
       </div>
       <div class="qty-controls">
         <button data-dec="${item.id}">-</button>
         <strong>${item.count}</strong>
         <button data-inc="${item.id}">+</button>
-        <button data-remove="${item.id}" class="btn danger">Remove</button>
+        <button data-remove="${item.id}" class="btn danger">${t("lbl_remove", "Remove")}</button>
       </div>
     </div>`).join("");
 
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.count, 0);
   summary.innerHTML = `
-    <div class="summary-line"><span>Items</span><span>${cart.reduce((sum, item) => sum + item.count, 0)}</span></div>
-    <div class="summary-line"><span>Subtotal</span><span>${money(subtotal)}</span></div>
-    <div class="summary-line"><span>Payment</span><span>Cash on pickup</span></div>
-    <div class="summary-line total"><span>Total</span><span>${money(subtotal)}</span></div>`;
+    <div class="summary-line"><span>${t("lbl_items", "Items")}</span><span>${cart.reduce((sum, item) => sum + item.count, 0)}</span></div>
+    <div class="summary-line"><span>${t("lbl_subtotal", "Subtotal")}</span><span>${money(subtotal)}</span></div>
+    <div class="summary-line"><span>${t("lbl_payment_method", "Payment")}</span><span>${t("lbl_cash_pickup", "Cash on pickup")}</span></div>
+    <div class="summary-line total"><span>${t("lbl_total", "Total")}</span><span>${money(subtotal)}</span></div>`;
 
   $$("[data-inc]").forEach(button => button.addEventListener("click", () => adjustCart(button.dataset.inc, 1)));
   $$("[data-dec]").forEach(button => button.addEventListener("click", () => adjustCart(button.dataset.dec, -1)));
@@ -509,16 +508,8 @@ async function adjustCart(id, delta) {
   renderCart();
 }
 
-async function removeCart(id) {
-  saveCart(getCart().filter(item => item.id !== id));
-  if (getAuth()?.token) {
-    await apiRequest(`/cart/remove/${id}`, { method: "DELETE" });
-  }
-  renderCart();
-  showToast("Item removed from cart.");
-}
 
-async function placeCartOrders(cart) {
+async function placeCartOrders(cart, details = {}) {
   const auth = getAuth();
   if (!auth?.token) {
     showToast("Please login to place an order.");
@@ -532,6 +523,7 @@ async function placeCartOrders(cart) {
       body: {
         product: item.id,
         quantity: item.count,
+        ...details
       },
     });
 
@@ -552,9 +544,21 @@ function renderCheckout() {
   if (!review) return;
   const cart = getCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.count, 0);
+  
+  const auth = getAuth();
+  if (auth?.user) {
+    const { name, phone, address } = auth.user;
+    const nameInp = $("#buyerName");
+    const phoneInp = $("#phone");
+    const addrInp = $("#deliveryAddress");
+    if (nameInp && name) nameInp.value = name;
+    if (phoneInp && phone) phoneInp.value = phone;
+    if (addrInp && address) addrInp.value = address;
+  }
+
   review.innerHTML = cart.length ? cart.map(item => `
     <div class="summary-line"><span>${item.name} x ${item.count}</span><span>${money(item.price * item.count)}</span></div>
-  `).join("") + `<div class="summary-line total"><span>Cash Total</span><span>${money(total)}</span></div>` : `<div class="empty-state">Add products before checkout.</div>`;
+  `).join("") + `<div class="summary-line total"><span>${t("lbl_cash_total", "Cash Total")}</span><span>${money(total)}</span></div>` : `<div class="empty-state">${t("lbl_empty_cart", "Add products before checkout.")}</div>`;
 
   $("#checkoutForm")?.addEventListener("submit", async event => {
     event.preventDefault();
@@ -565,7 +569,15 @@ function renderCheckout() {
       return;
     }
 
-    const result = await placeCartOrders(cart);
+    const details = {
+      phone: $("#phone")?.value.trim() || "",
+      deliveryAddress: $("#deliveryAddress")?.value.trim() || "",
+      pickupDate: $("#pickupDate")?.value || "",
+      pickupSlot: $("#slot")?.value || "",
+      note: $("#note")?.value.trim() || ""
+    };
+
+    const result = await placeCartOrders(cart, details);
     if (!result.success) {
       showToast(result.message || "Order placement failed.");
       return;
@@ -575,7 +587,7 @@ function renderCheckout() {
     if (getAuth()?.token) {
       await apiRequest("/cart/clear", { method: "DELETE" });
     }
-    showToast("Order placed successfully.");
+    showToast(t("msg_order_success", "Order placed successfully."));
     setTimeout(() => location.href = "orders.html", 800);
   });
 }
@@ -600,25 +612,44 @@ function validateFields(form) {
   return hasError;
 }
 
+async function loadFarmers() {
+  try {
+    const res = await apiRequest("/users/farmers");
+    if (res.ok) {
+      const payload = await res.json();
+      farmers = payload.data;
+    }
+  } catch (e) {
+    console.error("Failed to load farmers", e);
+  }
+}
+
 function renderFarmers() {
   const grid = $("#farmersGrid");
   if (!grid) return;
-  grid.innerHTML = data.farmers.map(farmer => `
+  
+  const displayFarmers = farmers.length > 0 ? farmers : data.farmers;
+
+  grid.innerHTML = displayFarmers.map(farmer => {
+    const initials = farmer.name.split(" ").map(part => part[0]).join("").slice(0, 2).toUpperCase();
+    const cropList = farmer.primaryCrops || farmer.crops || "Various farm products";
+    const loc = farmer.location || "Verified Farmer";
+    const phone = farmer.phone || "No phone provided";
+
+    return `
     <article class="farmer-card">
       <div class="farmer-top">
-        <div class="farmer-avatar">${farmer.name.split(" ").map(part => part[0]).join("")}</div>
+        <div class="farmer-avatar">${initials}</div>
         <div>
           <h3>${farmer.name}</h3>
-          <p class="muted">${farmer.location} - Rating ${farmer.rating}</p>
+          <p class="muted">${loc} • <strong>${phone}</strong></p>
         </div>
       </div>
-      <p class="muted">${farmer.crops}</p>
-      <div class="card-row">
-        <button class="btn primary" data-connect="${farmer.name}">Connect</button>
-        <button class="btn ghost" data-chat="${farmer.name}">Chat</button>
-      </div>
-    </article>`).join("");
-  $$("[data-connect], [data-chat]").forEach(button => button.addEventListener("click", () => showToast(`${button.textContent} request ready for ${button.dataset.connect || button.dataset.chat}. UI only.`)));
+      <p class="muted" style="margin: 10px 0;">
+        <i class="fas fa-seedling"></i> ${cropList}
+      </p>
+    </article>`;
+  }).join("");
 }
 
 async function renderProfile() {
@@ -644,18 +675,31 @@ async function renderProfile() {
   const displayEl = document.getElementById('profileDisplayName');
   const nameInput = document.getElementById('profileName');
   const emailInput = document.getElementById('profileEmail');
+  const phoneInput = document.getElementById('profilePhone');
+  const marketInput = document.getElementById('profileMarket');
+  const addressInput = document.getElementById('profileAddress');
+  const categorySelect = document.getElementById('profileCategory');
 
   if (avatarEl) avatarEl.textContent = initials;
   if (displayEl) displayEl.textContent = name;
   if (nameInput) nameInput.value = name;
   if (emailInput) emailInput.value = email || '';
+  if (phoneInput) phoneInput.value = user.phone || '';
+  if (marketInput) marketInput.value = user.marketArea || user.location || '';
+  if (addressInput) addressInput.value = user.address || '';
+  if (categorySelect) categorySelect.value = user.preferredCategory || 'Fruits & Vegetables';
 
   const form = document.getElementById('profileForm');
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const data = {
       name: nameInput.value.trim(),
-      email: emailInput.value.trim()
+      email: emailInput.value.trim(),
+      phone: document.getElementById('profilePhone')?.value.trim() || '',
+      location: document.getElementById('profileMarket')?.value.trim() || '',
+      marketArea: document.getElementById('profileMarket')?.value.trim() || '',
+      preferredCategory: document.getElementById('profileCategory')?.value || '',
+      address: document.getElementById('profileAddress')?.value.trim() || ''
     };
 
     try {
@@ -693,29 +737,31 @@ function renderOrders() {
     const filtered = activeTab === "all"
       ? retailerOrders
       : retailerOrders.filter(o => {
-          if (activeTab === "purchase") return ["pending","accepted","shipped","delivered"].includes(o.orderStatus);
+          if (activeTab === "active") return ["pending", "accepted", "shipped"].includes(o.orderStatus);
+          if (activeTab === "completed") return o.orderStatus === "delivered";
           if (activeTab === "cancelled") return o.orderStatus === "cancelled";
           return true;
         });
 
     if (!filtered.length) {
-      list.innerHTML = `<div class="empty-state">No orders found for this filter.</div>`;
+      list.innerHTML = `<div class="empty-state">${t("lbl_no_orders", "No orders found for this filter.")}</div>`;
       return;
     }
 
     list.innerHTML = filtered.map(order => {
       const color = ORDER_STATUS_BADGE[order.orderStatus] || "#64748b";
+      const statusLabel = t['sub_' + order.orderStatus] || order.orderStatus;
       return `
       <article class="order-card">
         <div class="card-row">
           <div>
             <h3>${order.product?.name || "Order item"}</h3>
-            <p class="muted">From: ${order.farmer?.name || "Farmer"} &bull; ${new Date(order.createdAt).toLocaleDateString("en-IN")}</p>
+            <p class="muted">${t("lbl_from", "From")}: ${order.farmer?.name || "Farmer"} &bull; ${new Date(order.createdAt).toLocaleDateString(currentLang === 'en' ? 'en-IN' : currentLang)}</p>
           </div>
-          <span class="pill" style="background:${color}20;color:${color};">${order.orderStatus}</span>
+          <span class="pill" style="background:${color}20;color:${color};">${statusLabel}</span>
         </div>
         <div class="card-row">
-          <span class="muted">Qty: ${order.quantity} ${order.product?.unit || "kg"}</span>
+          <span class="muted">${t("lbl_qty", "Qty")}: ${order.quantity} ${order.product?.unit || "kg"}</span>
           <strong class="price">${money(order.totalPrice)}</strong>
         </div>
       </article>`;
@@ -750,7 +796,7 @@ async function renderProductDetail() {
     try {
       const response = await apiRequest(`/products?limit=1`);
       // Fetch the specific product via search workaround since no single-product endpoint
-      const res = await fetch(`${API_BASE_URL}/products/${productId}`);
+      const res = await apiRequest(`/products/${productId}`);
       if (res.ok) {
         const payload = await res.json();
         if (payload.data) product = normalizeProduct(payload.data);
@@ -799,6 +845,7 @@ async function init() {
 
   setupShell();
   await loadCart();
+  await loadFarmers();
   await loadProducts(); // Load products first for farmer count
   await loadRetailerOrders();
   renderDashboard();
@@ -807,8 +854,20 @@ async function init() {
   renderCheckout();
   renderFarmers();
   renderOrders();
-  await renderProfile();
   await renderProductDetail();
+  await renderProfile();
+
+  // ── Language listener ────────────────────────────────────
+  document.addEventListener('languageChanged', () => {
+    renderDashboard();
+    renderMarketplace();
+    renderCart();
+    renderCheckout();
+    renderOrders();
+    renderFarmers();
+    renderProductDetail();
+    renderProfile();
+  });
 }
 
 document.addEventListener("DOMContentLoaded", init);

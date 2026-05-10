@@ -1,7 +1,9 @@
 const Product = require("../models/Product");
+const User = require("../models/User");
 const mongoose = require("mongoose");
 const AppError = require("../utils/AppError");
 const asyncHandler = require("../utils/asyncHandler");
+const { createNotification } = require("../utils/notificationHelper");
 
 const getUploadedImagePath = (req) => {
   if (!req.file) return null;
@@ -21,6 +23,22 @@ const createProduct = asyncHandler(async (req, res) => {
     description,
     image: getUploadedImagePath(req) || image || "",
   });
+
+  // Notify interested retailers
+  const interestedRetailers = await User.find({
+    role: 'retailer',
+    preferredCategory: category
+  });
+
+  for (const retailer of interestedRetailers) {
+    await createNotification(
+      retailer._id,
+      "New Stock Alert",
+      `${req.user.name} just added ${name} in your interested category: ${category}.`,
+      "inventory",
+      "/pages/retailer/marketplace.html"
+    );
+  }
 
   res.status(201).json({ success: true, data: product });
 });
@@ -148,6 +166,8 @@ const updateProduct = asyncHandler(async (req, res) => {
   res.json({ success: true, data: updatedProduct });
 });
 
+const { logAdminAction } = require("../utils/logger");
+
 const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
@@ -161,12 +181,33 @@ const deleteProduct = asyncHandler(async (req, res) => {
 
   await Product.findByIdAndDelete(req.params.id);
 
+  if (req.user.role === 'admin') {
+    await logAdminAction(
+      req.user._id,
+      "DELETE_PRODUCT",
+      "Product",
+      product._id,
+      `Deleted product: ${product.name} (ID: ${product._id})`
+    );
+  }
+
   res.json({ success: true, message: "Product deleted" });
+});
+
+const getProductById = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id).populate("farmer", "name email");
+
+  if (!product) {
+    throw new AppError("Product not found", 404);
+  }
+
+  res.json({ success: true, data: product });
 });
 
 module.exports = {
   createProduct,
   getProducts,
+  getProductById,
   updateProduct,
   deleteProduct,
 };

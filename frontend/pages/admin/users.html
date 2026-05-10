@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management | AgriMart Admin</title>
+  <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/shell.js"></script>
+  <style>
+    .admin-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    .admin-table th, .admin-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--line); }
+    .admin-table th { background: var(--surface-soft); font-weight: 600; color: var(--text-dim); }
+    .admin-table tr:hover { background: var(--surface-soft); }
+  </style>
+</head>
+<body data-page="admin-users">
+  <script>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("admin-users", "User Directory", "Manage all users, roles, and account statuses.", `
+      <div class="panel">
+        <div id="adminUsersList">
+          <div class="skeleton" style="height:400px;">Loading users...</div>
+        </div>
+      </div>
+    `, "hdr_user_directory", "sub_user_directory"));
+  </script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/admin.js"></script>
+</body>
+</html>

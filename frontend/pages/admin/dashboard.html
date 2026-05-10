@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | AgriMart</title>
+  <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/shell.js"></script>
+</head>
+<body data-page="admin-dashboard">
+  <script>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("admin-dashboard", "System Control", "Overview of the entire marketplace activity.", `
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-icon">👥</div>
+          <p data-i18n="lbl_total_users">Total Users</p>
+          <strong>0</strong>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon">🚜</div>
+          <p data-i18n="lbl_active_products">Active Products</p>
+          <strong>0</strong>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon">📦</div>
+          <p data-i18n="lbl_total_orders">Total Platform Orders</p>
+          <strong>0</strong>
+        </article>
+        <article class="stat-card">
+          <div class="stat-icon">💰</div>
+          <p data-i18n="lbl_gross_revenue">Gross Platform Revenue</p>
+          <strong>₹0</strong>
+        </article>
+      </section>
+
+      <section class="dashboard-grid" style="margin-top:24px;">
+        <div class="panel">
+          <div class="panel-head">
+            <h2 data-i18n="lbl_recent_transactions">Recent Transactions</h2>
+            <a class="pill" href="orders.html" data-i18n="btn_view_all_orders">View All Orders</a>
+          </div>
+          <div class="orders-list" id="recentTransactions">
+            <div class="skeleton" style="height:200px;">Loading transactions...</div>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head">
+            <h2 data-i18n="lbl_new_registrations">New User Registrations</h2>
+            <a class="pill" href="users.html" data-i18n="btn_manage_users">Manage Users</a>
+          </div>
+          <div class="orders-list" id="recentUsers">
+            <div class="skeleton" style="height:200px;">Loading users...</div>
+          </div>
+        </div>
+      </section>
+    `, "hdr_system_control", "sub_system_control"));
+  </script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/admin.js?v=1.1"></script>
+</body>
+</html>

@@ -9,7 +9,7 @@
         :root {
             --primary: #e6a73a;
             --primary-dark: #c98e2b;
-            --bg-overlay: rgba(0, 0, 0, 0.5); /* Added missing variable */
+            --bg-overlay: rgba(0, 0, 0, 0.5);
             --text-dark: #333;
             --text-muted: #666;
             --white: #ffffff;
@@ -18,7 +18,6 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
 
         body {
-            /* Updated background logic to ensure it displays correctly */
             background: linear-gradient(var(--bg-overlay), var(--bg-overlay)), 
                         url('assets/images/backimag.jpg') no-repeat center center fixed;
             background-size: cover;
@@ -37,12 +36,31 @@
             border-radius: 12px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
             text-align: center;
+            position: relative;
             animation: fadeIn 0.5s ease-in-out;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+
+        .lang-switcher select {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+            color: var(--text-dark);
         }
 
         .logo-area h1 {
@@ -176,68 +194,93 @@
 
         @media (max-width: 480px) {
             .auth-card { padding: 30px 20px; }
+            .lang-switcher { position: relative; top: 0; right: 0; margin-bottom: 20px; text-align: right; }
         }
     </style>
+    <script src="js/i18n.js"></script>
 </head>
 <body>
 
     <div class="auth-card">
+        <div class="lang-switcher">
+            <select id="langSelect" onchange="changeLanguage(this.value)">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="mr">मराठी (Marathi)</option>
+                <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+            </select>
+        </div>
+
         <div class="logo-area">
-            <h1>AgriMart</h1>
-            <p>India's Digital Supply Chain Hub</p>
+            <h1 data-i18n="brand_name">AgriMart</h1>
+            <p data-i18n="tagline">India's Digital Supply Chain Hub</p>
         </div>
 
         <div class="auth-tabs">
-            <button class="tab-btn active" id="loginTab" onclick="switchAuth('login')">Login</button>
-            <button class="tab-btn" id="regTab" onclick="switchAuth('register')">Register</button>
+            <button class="tab-btn active" id="loginTab" onclick="switchAuth('login')" data-i18n="tab_login">Login</button>
+            <button class="tab-btn" id="regTab" onclick="switchAuth('register')" data-i18n="tab_register">Register</button>
         </div>
 
         <div id="loginSection" class="form-container active">
             <form id="loginForm">
                 <div class="input-group">
-                    <label>Email</label>
-                    <input id="loginEmail" type="email" placeholder="Enter your email" required>
+                    <label data-i18n="lbl_email">Email</label>
+                    <input id="loginEmail" type="email" placeholder="Enter your email" data-i18n-placeholder="ph_email" required>
                 </div>
                 <div class="input-group">
-                    <label>Password</label>
-                    <input id="loginPassword" type="password" placeholder="Enter your password" required>
+                    <label data-i18n="lbl_password">Password</label>
+                    <input id="loginPassword" type="password" placeholder="Enter your password" data-i18n-placeholder="ph_password" required>
                 </div>
-                <button type="submit" class="submit-btn">LOGIN</button>
+                <button type="submit" class="submit-btn" data-i18n="btn_login">LOGIN</button>
             </form>
         </div>
 
         <div id="regSection" class="form-container">
             <form id="registerForm">
                 <div class="input-group">
-                    <label>Full Name</label>
-                    <input id="regName" type="text" placeholder="e.g. Rahul Sharma" required>
+                    <label data-i18n="lbl_fullname">Full Name</label>
+                    <input id="regName" type="text" placeholder="e.g. Rahul Sharma" data-i18n-placeholder="ph_fullname" required>
                 </div>
 
-                <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 8px;">I am a:</label>
+                <label style="font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 8px;" data-i18n="lbl_iam">I am a:</label>
                 <div class="role-wrapper">
-                    <div class="role-option active" id="optFarmer" onclick="setRole('farmer')">Farmer</div>
-                    <div class="role-option" id="optRetailer" onclick="setRole('retailer')">Retailer</div>
+                    <div class="role-option active" id="optFarmer" onclick="setRole('farmer')" data-i18n="role_farmer">Farmer</div>
+                    <div class="role-option" id="optRetailer" onclick="setRole('retailer')" data-i18n="role_retailer">Retailer</div>
+                    <div class="role-option" id="optAdmin" onclick="setRole('admin')" data-i18n="role_admin">Admin</div>
                 </div>
                 <input type="hidden" name="role" id="userRole" value="farmer">
 
                 <div class="input-group">
-                    <label>Email Address</label>
-                    <input id="regEmail" type="email" placeholder="name@example.com" required>
+                    <label data-i18n="lbl_email">Email Address</label>
+                    <input id="regEmail" type="email" placeholder="name@example.com" data-i18n-placeholder="ph_reg_email" required>
                 </div>
                 <div class="input-group">
-                    <label>Password</label>
-                    <input id="regPassword" type="password" placeholder="Create a password" required>
+                    <label data-i18n="lbl_password">Password</label>
+                    <input id="regPassword" type="password" placeholder="Create a password" data-i18n-placeholder="ph_reg_password" required>
                 </div>
-                <button type="submit" class="submit-btn">CREATE ACCOUNT</button>
+                <button type="submit" class="submit-btn" data-i18n="btn_register">CREATE ACCOUNT</button>
             </form>
         </div>
 
         <div class="footer-links">
-            <p><a href="index.html">← Back to Home</a></p>
+            <p><a href="index.html" data-i18n="link_back">← Back to Home</a></p>
         </div>
     </div>
 
     <script>
+        // Use global currentLang from i18n.js if available, else initialize
+        if (typeof currentLang === 'undefined') {
+            window.currentLang = localStorage.getItem('agriLang') || 'en';
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('agriLang', lang);
+            if (typeof applyTranslations === 'function') {
+                applyTranslations(lang);
+            }
+        }
+
         function switchAuth(type) {
             const loginSection = document.getElementById('loginSection');
             const regSection = document.getElementById('regSection');
@@ -260,16 +303,22 @@
         function setRole(role) {
             const fBtn = document.getElementById('optFarmer');
             const rBtn = document.getElementById('optRetailer');
+            const aBtn = document.getElementById('optAdmin');
             const roleInput = document.getElementById('userRole');
+            
+            fBtn.classList.remove('active');
+            rBtn.classList.remove('active');
+            aBtn.classList.remove('active');
             
             if (role === 'farmer') {
                 fBtn.classList.add('active');
-                rBtn.classList.remove('active');
                 roleInput.value = 'farmer';
-            } else {
+            } else if (role === 'retailer') {
                 rBtn.classList.add('active');
-                fBtn.classList.remove('active');
                 roleInput.value = 'retailer';
+            } else if (role === 'admin') {
+                aBtn.classList.add('active');
+                roleInput.value = 'admin';
             }
         }
 
@@ -297,13 +346,14 @@
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value.trim();
             const btn = event.target.querySelector('button[type="submit"]');
+            const t = translations[currentLang];
 
             if (!email || !password) {
-                return showMsg('loginMsg', 'Please enter email and password.', 'error');
+                return showMsg('loginMsg', t.err_fill, 'error');
             }
 
             btn.disabled = true;
-            btn.textContent = 'Logging in...';
+            btn.textContent = t.msg_logging_in;
             try {
                 const response = await authRequest('/auth/login', {
                     method: 'POST',
@@ -312,21 +362,26 @@
 
                 if (!response.ok) {
                     const payload = await response.json().catch(() => ({}));
-                    showMsg('loginMsg', payload.message || 'Login failed. Check credentials.', 'error');
+                    showMsg('loginMsg', payload.message || 'Login failed.', 'error');
                     return;
                 }
 
                 const payload = await response.json();
                 saveAuth(payload.token, { _id: payload._id, name: payload.name, email: payload.email, role: payload.role });
-                btn.textContent = 'Redirecting...';
+                btn.textContent = t.msg_redirecting;
                 if (payload.role === 'retailer') {
                     location.href = 'pages/retailer/marketplace.html';
+                } else if (payload.role === 'admin') {
+                    location.href = 'pages/admin/dashboard.html';
                 } else {
                     location.href = 'pages/farmer.html/farmerindex.html';
                 }
+            } catch (err) {
+                console.error('Login error:', err);
+                showMsg('loginMsg', 'An unexpected error occurred. Please try again.', 'error');
             } finally {
                 btn.disabled = false;
-                if (btn.textContent === 'Logging in...') btn.textContent = 'LOGIN';
+                if (btn.textContent === t.msg_logging_in) btn.textContent = t.btn_login;
             }
         }
 
@@ -337,16 +392,14 @@
             const password = document.getElementById('regPassword').value.trim();
             const role = document.getElementById('userRole').value;
             const btn = event.target.querySelector('button[type="submit"]');
+            const t = translations[currentLang];
 
             if (!name || !email || !password) {
-                return showMsg('regMsg', 'Please fill all registration fields.', 'error');
-            }
-            if (password.length < 6) {
-                return showMsg('regMsg', 'Password must be at least 6 characters.', 'error');
+                return showMsg('regMsg', t.err_fill, 'error');
             }
 
             btn.disabled = true;
-            btn.textContent = 'Creating account...';
+            btn.textContent = t.msg_creating;
             try {
                 const response = await authRequest('/auth/register', {
                     method: 'POST',
@@ -361,15 +414,20 @@
 
                 const payload = await response.json();
                 saveAuth(payload.token, { _id: payload._id, name: payload.name, email: payload.email, role: payload.role });
-                btn.textContent = 'Redirecting...';
+                btn.textContent = t.msg_redirecting;
                 if (payload.role === 'retailer') {
                     location.href = 'pages/retailer/marketplace.html';
+                } else if (payload.role === 'admin') {
+                    location.href = 'pages/admin/dashboard.html';
                 } else {
                     location.href = 'pages/farmer.html/farmerindex.html';
                 }
+            } catch (err) {
+                console.error('Register error:', err);
+                showMsg('regMsg', 'An unexpected error occurred. Please try again.', 'error');
             } finally {
                 btn.disabled = false;
-                if (btn.textContent === 'Creating account...') btn.textContent = 'CREATE ACCOUNT';
+                if (btn.textContent === t.msg_creating) btn.textContent = t.btn_register;
             }
         }
 
@@ -390,6 +448,14 @@
 
         document.getElementById('loginForm')?.addEventListener('submit', submitLogin);
         document.getElementById('registerForm')?.addEventListener('submit', submitRegister);
+
+        /* ===== AUTO TAB SWITCH BASED ON URL ===== */
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('mode') === 'register') {
+                switchAuth('register');
+            }
+        });
     </script>
 </body>
 </html>

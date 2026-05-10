@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Profile | AgriMart</title>
+  <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/shell.js"></script>
+</head>
+<body data-page="admin-profile">
+  <script>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("admin-profile", "System Profile", "Manage your administrative account details.", `
+      <section class="split-grid">
+        <div class="profile-panel">
+          <div class="profile-hero">
+            <div class="profile-avatar" id="adminAvatar">AD</div>
+            <div>
+              <h2 id="adminName">Administrator</h2>
+              <p class="muted"><span data-i18n="lbl_access_level">System Access Level</span>: <strong data-i18n="lbl_full_admin">Full Admin</strong></p>
+              <span class="pill" data-i18n="lbl_root_access">Root Access</span>
+            </div>
+          </div>
+          <form class="form-grid" id="adminProfileForm">
+            <div class="field">
+              <label data-i18n="lbl_fullname">Full Name</label>
+              <input id="pName" required data-i18n-placeholder="ph_full_name" placeholder="e.g. Arjun Singh">
+            </div>
+            <div class="field">
+              <label data-i18n="lbl_email">Email Address</label>
+              <input id="pEmail" type="email" required data-i18n-placeholder="ph_email" placeholder="Enter your email">
+            </div>
+            <div class="field">
+              <label data-i18n="lbl_role">System Role</label>
+              <input id="pRole" value="Administrator" disabled data-i18n-value="role_admin">
+            </div>
+            <div class="field full">
+              <button class="btn primary" type="submit" data-i18n="btn_update_admin">Update Admin Details</button>
+            </div>
+          </form>
+        </div>
+        <aside class="panel">
+          <div class="panel-head"><h2 data-i18n="lbl_system_logs">System Logs</h2></div>
+          <div class="empty-state">
+            <p data-i18n="state_no_logs">Your recent activities will appear here.</p>
+          </div>
+        </aside>
+      </section>
+    `, "admin_profile_title", "admin_profile_subtitle"));
+  </script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/admin.js?v=1.1"></script>
+</body>
+</html>

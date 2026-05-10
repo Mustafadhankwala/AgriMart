@@ -27,6 +27,7 @@ app.use("/api/users",    require("./src/routes/user.routes.js"));
 app.use("/api/cart",     require("./src/routes/cart.routes.js"));
 app.use("/api/dashboard", require("./src/routes/dashboard.routes.js"));
 app.use("/api/team",      require("./src/routes/team.routes.js"));
+app.use("/api/notifications", require("./src/routes/notification.routes.js"));
 
 app.use(notFound);
 app.use(errorHandler);

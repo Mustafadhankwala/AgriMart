@@ -8,29 +8,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile | AgriRetail</title>
   <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/i18n.js"></script>
   <script src="../../js/shell.js"></script>
 </head>
 <body data-page="profile">
   <script>
-    document.body.insertAdjacentHTML("afterbegin", dashboardShell("Profile", "Retailer Profile", "Manage storefront identity and farmer-facing contact details.", `
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("profile", "Retailer Profile", "Manage your store details and preferences.", `
       <section class="split-grid">
         <div class="profile-panel">
-          <div class="profile-hero" id="profileHero"><div class="profile-avatar" id="profileAvatar">VR</div><div><h2 id="profileDisplayName">Loading...</h2><p class="muted">Fresh produce retailer</p><span class="pill">Verified cash buyer</span></div></div>
+          <div class="profile-hero" id="profileHero"><div class="profile-avatar" id="profileAvatar">VR</div><div><h2 id="profileDisplayName">Loading...</h2><p class="muted" data-i18n="lbl_retailer_type">Fresh produce retailer</p><span class="pill" data-i18n="lbl_verified_buyer">Verified cash buyer</span></div></div>
           <form class="form-grid" id="profileForm">
-            <div class="field"><label>Store name</label><input id="profileName" required><span class="error"></span></div>
-            <div class="field"><label>Email</label><input id="profileEmail" type="email" required><span class="error"></span></div>
-            <div class="field"><label>Phone</label><input id="profilePhone"><span class="error"></span></div>
-            <div class="field"><label>Market area</label><input id="profileMarket"><span class="error"></span></div>
-            <div class="field"><label>Preferred category</label><select id="profileCategory"><option>Fruits &amp; Vegetables</option><option>Vegetables</option><option>Fruits</option></select><span class="error"></span></div>
-            <div class="field full"><button class="btn primary" type="submit">Save Profile</button></div>
+            <div class="field"><label data-i18n="lbl_store_name">Store name</label><input id="profileName" required><span class="error"></span></div>
+            <div class="field"><label data-i18n="lbl_email">Email</label><input id="profileEmail" type="email" required><span class="error"></span></div>
+            <div class="field"><label data-i18n="lbl_phone">Phone</label><input id="profilePhone"><span class="error"></span></div>
+            <div class="field"><label data-i18n="lbl_market_area">Market area</label><input id="profileMarket"><span class="error"></span></div>
+            <div class="field full"><label data-i18n="lbl_address">Store Address</label><textarea id="profileAddress" rows="2" style="background:var(--surface);border:1px solid var(--line);border-radius:8px;color:var(--text);padding:12px;width:100%;font-family:inherit;resize:vertical;"></textarea><span class="error"></span></div>
+            <div class="field"><label data-i18n="lbl_category">Preferred category</label><select id="profileCategory"><option data-i18n="opt_veggies_fruits">Fruits &amp; Vegetables</option><option data-i18n="opt_veggies">Vegetables</option><option data-i18n="opt_fruits">Fruits</option></select><span class="error"></span></div>
+            <div class="field full"><button class="btn primary" type="submit" data-i18n="btn_save_profile">Save Profile</button></div>
           </form>
         </div>
         <aside class="panel">
-          <div class="panel-head"><h2>Farmer Connection</h2><span class="pill">Live</span></div>
+          <div class="panel-head"><h2 data-i18n="hdr_farmer_connection">Farmer Connection</h2><span class="pill" data-i18n="lbl_live">Live</span></div>
           <div class="farmers-grid" id="farmersGrid" style="grid-template-columns:1fr;"></div>
         </aside>
       </section>
-    `));
+    `, "hdr_retailer_profile", "sub_retailer_profile", "nav_profile"));
   </script>
   <script src="../../js/app.js"></script>
 </body>

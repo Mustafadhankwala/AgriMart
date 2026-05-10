@@ -34,6 +34,11 @@ const userSchema = new mongoose.Schema(
     farmSize: { type: String, default: "" },
     primaryCrops: { type: String, default: "" },
     certification: { type: String, default: "" },
+
+    // Retailer profile fields
+    marketArea: { type: String, default: "" },
+    preferredCategory: { type: String, default: "" },
+    address: { type: String, default: "" },
   },
   {
     timestamps: true,

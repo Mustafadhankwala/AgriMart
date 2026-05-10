@@ -8,15 +8,21 @@ const {
   deleteUser,
   getProfile,
   updateProfile,
+  getFarmers,
+  getTestimonials,
 } = require("../controllers/user.controller.js");
 
 const { protect } = require("../middleware/auth.middleware.js");
 const { adminOnly, authorize } = require("../middleware/role.middleware.js");
 const { validateObjectIdParam } = require("../middleware/validation.middleware.js");
 
+// Public routes (No auth required)
+router.get("/testimonials", getTestimonials);
+
 // Profile routes (Any authenticated user)
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
+router.get("/farmers", protect, getFarmers);
 
 // Admin only routes
 router.get("/", protect, adminOnly, getUsers);

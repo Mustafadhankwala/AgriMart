@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Control | AgriMart Admin</title>
+  <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/shell.js"></script>
+</head>
+<body data-page="admin-products">
+  <script>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("admin-products", "Global Inventory", "Monitor and manage all products listed by farmers.", `
+      <div class="panel">
+        <div class="orders-list" id="adminProductsList">
+          <div class="skeleton" style="height:400px;">Loading products...</div>
+        </div>
+      </div>
+    `, "hdr_global_inventory", "sub_global_inventory"));
+  </script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/admin.js?v=1.1"></script>
+</body>
+</html>

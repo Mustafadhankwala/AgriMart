@@ -32,6 +32,11 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "accepted", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
+    phone: { type: String, default: "" },
+    deliveryAddress: { type: String, default: "" },
+    pickupDate: { type: String, default: "" },
+    pickupSlot: { type: String, default: "" },
+    note: { type: String, default: "" },
   },
   {
     timestamps: true,

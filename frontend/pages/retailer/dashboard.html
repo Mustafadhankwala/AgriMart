@@ -3,44 +3,80 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | AgriRetail</title>
   <link rel="stylesheet" href="../../css/retailer.css">
   <link rel="icon" href="/assets/icons/icon.ico" type="image/png">
+  <script src="../../js/i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="../../js/shell.js"></script>
 </head>
+
 <body data-page="dashboard">
   <script>
-    document.body.insertAdjacentHTML("afterbegin", dashboardShell("Overview", "Retailer Dashboard", "Track purchases, farmer connections, sales and cash-only order movement.", `
-      <section class="panel hero-panel">
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("dashboard", "Retailer Dashboard", "Track purchases, farmer connections, and sales.", `
+      <section class="panel hero-panel fade-in">
         <div>
-          <p class="eyebrow">Direct from farmers</p>
-          <h1>Buy fresh, sell faster, settle in cash.</h1>
-          <p>Manage your agri-retail operation with live marketplace stock, farmer connections, sales listings and order histories in one polished workspace.</p>
-          <a class="btn primary" href="marketplace.html">Explore Marketplace</a>
+          <p class="eyebrow" data-i18n="hdr_overview">Direct from farmers</p>
+          <h1 id="welcomeGreeting"><span data-i18n="welcome_back">Welcome back,</span> <span id="userNamePlaceholder">Retailer</span>!</h1>
+          <p data-i18n="hero_desc_retailer">Manage your agri-retail operation with live marketplace stock, farmer connections, and order histories in one polished workspace.</p>
+          <div class="hero-actions" style="margin-top: 24px; display: flex; gap: 12px;">
+            <a class="btn primary" href="marketplace.html" data-i18n="nav_marketplace">Explore Marketplace</a>
+            <a class="btn ghost" href="orders.html" data-i18n="nav_orders">View Orders</a>
+          </div>
         </div>
         <div class="hero-image" role="img" aria-label="Fresh vegetables at market"></div>
       </section>
-      <section class="stats-grid" style="margin-top:18px;">
-        <article class="stat-card"><div class="stat-icon">↙</div><span>Total Purchases</span><strong>₹0</strong></article>
-        <article class="stat-card"><div class="stat-icon">☘</div><span>Active Farmers</span><strong>0</strong></article>
-        <article class="stat-card"><div class="stat-icon">▣</div><span>Recent Orders</span><strong>0</strong></article>
+
+      <section class="stats-grid" style="margin-top:24px;">
+        <article class="stat-card fade-in" style="animation-delay: 0.1s;">
+          <div class="stat-icon">↙</div>
+          <span data-i18n="stat_total_purchases">Total Purchases</span>
+          <strong>₹0</strong>
+        </article>
+        <article class="stat-card fade-in" style="animation-delay: 0.2s;">
+          <div class="stat-icon">☘</div>
+          <span data-i18n="stat_active_farmers">Active Farmers</span>
+          <strong>0</strong>
+        </article>
+        <article class="stat-card fade-in" style="animation-delay: 0.3s;">
+          <div class="stat-icon">▣</div>
+          <span data-i18n="stat_recent_orders">Recent Orders</span>
+          <strong>0</strong>
+        </article>
       </section>
+
       <section class="dashboard-grid">
-        <div class="panel">
-          <div class="panel-head"><h2>Purchase & Sales Flow</h2><span class="pill">Chart.js</span></div>
+        <div class="panel fade-in" style="animation-delay: 0.4s;">
+          <div class="panel-head">
+            <h2 data-i18n="card_monthly_sales">Purchase & Sales Flow</h2>
+            <span class="pill">Chart.js</span>
+          </div>
           <canvas id="salesChart" height="120"></canvas>
         </div>
-        <div class="panel">
-          <div class="panel-head"><h2>Recent Orders</h2><a class="pill" href="orders.html">View all</a></div>
-          <div class="orders-list" id="recentOrders"></div>
+        <div class="panel fade-in" style="animation-delay: 0.5s;">
+          <div class="panel-head">
+            <h2 data-i18n="hdr_recent">Recent Orders</h2>
+            <a class="pill" href="orders.html" data-i18n="btn_edit_sm">View all</a>
+          </div>
+          <div class="orders-list" id="recentOrders">
+            <div class="skeleton" style="height: 200px;">Loading orders...</div>
+          </div>
         </div>
       </section>
-    `));
+    `, "hdr_retailer_dashboard", "sub_retailer_dashboard", "nav_dashboard"));
+
+    // Update greeting with user name
+    const authData = JSON.parse(localStorage.getItem('agriAuthToken'));
+    if (authData?.user?.name) {
+      const nameEl = document.getElementById('userNamePlaceholder');
+      if (nameEl) nameEl.textContent = authData.user.name.split(' ')[0];
+    }
   </script>
-  <script src="../../js/app.js"></script> <!--app-->
+  <script src="../../js/app.js"></script>
 </body>
+
 </html>

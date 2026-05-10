@@ -2,6 +2,7 @@ const Order = require("../models/Order");
 const Product = require("../models/Product");
 const AppError = require("../utils/AppError");
 const asyncHandler = require("../utils/asyncHandler");
+const { createNotification } = require("../utils/notificationHelper");
 
 // ─── POST /api/orders ─────────────────────────────────────────
 // Retailer places an order.
@@ -36,6 +37,11 @@ const placeOrder = asyncHandler(async (req, res) => {
       product: productId,
       quantity,
       totalPrice: product.price * quantity,
+      phone: req.body.phone || "",
+      deliveryAddress: req.body.deliveryAddress || "",
+      pickupDate: req.body.pickupDate || "",
+      pickupSlot: req.body.pickupSlot || "",
+      note: req.body.note || "",
     });
   } catch (error) {
     await Product.findByIdAndUpdate(productId, { $inc: { quantity } });
@@ -46,6 +52,15 @@ const placeOrder = asyncHandler(async (req, res) => {
     .populate("retailer", "name email")
     .populate("farmer", "name email")
     .populate("product", "name category unit price image");
+
+  // Notify Farmer
+  await createNotification(
+    product.farmer,
+    "New Order Received",
+    `You have a new order for ${quantity} ${product.unit}(s) of ${product.name} from ${req.user.name}.`,
+    "order",
+    "/pages/farmer/orders.html"
+  );
 
   res.status(201).json({
     success: true,
@@ -157,7 +172,26 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
     .populate("farmer", "name email")
     .populate("product", "name category unit image price");
 
+  // Notify Retailer
+  await createNotification(
+    order.retailer,
+    `Order ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+    `Your order for ${populated.product.name} has been ${status} by the farmer.`,
+    "order",
+    "/pages/retailer/orders.html"
+  );
+
   res.json({ success: true, data: populated });
+});
+
+const getAllOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find()
+    .populate("retailer", "name email")
+    .populate("farmer", "name email")
+    .populate("product", "name category price unit image")
+    .sort("-createdAt");
+
+  res.json({ success: true, count: orders.length, data: orders });
 });
 
 module.exports = {
@@ -166,4 +200,5 @@ module.exports = {
   getFarmerOrders,
   getOrderById,
   updateOrderStatus,
+  getAllOrders,
 };

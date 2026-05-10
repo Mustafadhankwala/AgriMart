@@ -177,8 +177,50 @@ const getFarmerTopProducts = asyncHandler(async (req, res) => {
   res.json({ success: true, count: products.length, data: products });
 });
 
+const getAdminNotifications = asyncHandler(async (req, res) => {
+  const [recentOrders, recentProducts, recentUsers] = await Promise.all([
+    Order.find().populate("retailer", "name").populate("product", "name").sort("-createdAt").limit(5),
+    Product.find().populate("farmer", "name").sort("-createdAt").limit(5),
+    require("../models/User").find().sort("-createdAt").limit(5),
+  ]);
+
+  const notifications = [
+    ...recentOrders.map(o => ({
+      type: "order",
+      title: "New Order Placed",
+      message: `${o.retailer?.name || "Someone"} ordered ${o.product?.name || "an item"}`,
+      time: o.createdAt
+    })),
+    ...recentProducts.map(p => ({
+      type: "product",
+      title: "New Product Added",
+      message: `${p.farmer?.name || "Farmer"} added ${p.name}`,
+      time: p.createdAt
+    })),
+    ...recentUsers.map(u => ({
+      type: "user",
+      title: "New User Registered",
+      message: `${u.name} joined as ${u.role}`,
+      time: u.createdAt
+    }))
+  ].sort((a, b) => b.time - a.time).slice(0, 10);
+
+  res.json({ success: true, data: notifications });
+});
+
+const AuditLog = require("../models/AuditLog");
+
+const getAdminLogs = asyncHandler(async (req, res) => {
+  const logs = await AuditLog.find({ admin: req.user._id })
+    .sort("-createdAt")
+    .limit(20);
+  res.json({ success: true, data: logs });
+});
+
 module.exports = {
   getFarmerStats,
   getFarmerRecentOrders,
   getFarmerTopProducts,
+  getAdminNotifications,
+  getAdminLogs,
 };

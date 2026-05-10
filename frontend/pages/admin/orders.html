@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transaction Log | AgriMart Admin</title>
+  <link rel="stylesheet" href="../../css/retailer.css">
+  <script src="../../js/shell.js"></script>
+</head>
+<body data-page="admin-orders">
+  <script>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("admin-orders", "Transactions", "View and track all orders across the platform.", `
+      <div id="adminOrdersList">
+        <div class="skeleton" style="height:400px;">Loading transactions...</div>
+      </div>
+    `, "hdr_market_transactions", "sub_market_transactions"));
+  </script>
+  <script src="../../js/i18n.js"></script>
+  <script src="../../js/admin.js"></script>
+</body>
+</html>

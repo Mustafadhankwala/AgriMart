@@ -19,6 +19,18 @@
             --transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
+        body.dark {
+            --cream: #1a1c18;
+            --bg-soft: #121411;
+            --white: #161815;
+            --text: #e0e6e4;
+            --text-light: #b0b8b6;
+            --text-muted: #808886;
+            --shadow-sm: 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-md: 0 10px 30px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
         /* ===== RESET ===== */
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
@@ -83,6 +95,37 @@
             backdrop-filter: blur(14px);
             border-bottom: 1px solid rgba(0,0,0,0.06);
             padding: 0 5%;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        body.dark header {
+            background: rgba(22, 24, 21, 0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        body.dark {
+            background: var(--bg-soft);
+        }
+        body.dark .nav-links {
+            background: var(--white);
+        }
+        body.dark .nav-links a {
+            color: var(--text);
+        }
+        body.dark .product-card,
+        body.dark .team-card,
+        body.dark .testimonial-card,
+        body.dark .blog-card {
+            background: var(--white);
+            border-color: rgba(255,255,255,0.05);
+        }
+        body.dark .filter-btn {
+            background: var(--white);
+            border-color: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
+        body.dark .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
         }
         .navbar {
             display: flex;
@@ -130,6 +173,12 @@
         .nav-links a:hover { color: var(--primary); }
         .nav-links a:hover::after { width: 100%; }
 
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .btn-primary {
             background: var(--primary);
             color: white;
@@ -146,6 +195,26 @@
             background: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(230,167,58,0.35);
+        }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid var(--text-muted);
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        .theme-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
         }
 
         /* ===== HERO ===== */
@@ -202,12 +271,16 @@
             animation: fadeUp 0.9s 0.3s ease both;
         }
         .btn-hero {
-            padding: 15px 38px;
-            border-radius: 10px;
+            padding: 14px 32px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 1rem;
             cursor: pointer;
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
             border: none;
         }
         .btn-hero.solid {
@@ -594,7 +667,21 @@
         }
         .test-top { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
         .test-top img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
-        .test-meta h4 { font-size: 1rem; color: var(--green); font-weight: 700; }
+        .test-meta h4 { 
+            font-size: 1.1rem; 
+            color: var(--green); 
+            font-weight: 700; 
+            margin-bottom: 2px;
+            font-family: 'Playfair Display', serif;
+        }
+        .test-role {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         .stars { color: var(--primary); font-size: 0.85rem; margin-top: 2px; }
         .quote { font-style: italic; color: var(--text-light); font-size: 0.92rem; line-height: 1.75; }
         .quote-mark { font-size: 2.5rem; color: var(--primary); line-height: 0.8; font-family: Georgia; margin-bottom: 12px; display: block; }

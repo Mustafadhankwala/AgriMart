@@ -160,10 +160,10 @@ body.dark .sidebar {
   top: 0;
   z-index: 20;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  padding: 18px 26px;
+  align-items: center;
+  gap: 20px;
+  padding: 12px 26px;
   background: rgba(247, 243, 236, .86);
   border-bottom: 1px solid rgba(238, 226, 212, .75);
   backdrop-filter: blur(18px);
@@ -235,6 +235,25 @@ body.dark .topbar {
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--surface);
+  transition: transform .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.profile-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.lang-select select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
 }
 
 .avatar {
@@ -908,4 +927,56 @@ body.dark .hero-panel {
     right: -84px;
     width: min(92vw, 290px);
   }
+}
+
+/* Order Status Pills */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.status-pill.pending { background: rgba(245, 158, 11, 0.15); color: #b45309; }
+.status-pill.accepted { background: rgba(59, 130, 246, 0.15); color: #1d4ed8; }
+.status-pill.shipped { background: rgba(139, 92, 246, 0.15); color: #6d28d9; }
+.status-pill.delivered { background: rgba(34, 197, 94, 0.15); color: #15803d; }
+.status-pill.cancelled { background: rgba(239, 68, 68, 0.15); color: #b91c1c; }
+
+/* Premium Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--line);
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--muted);
+}
+
+/* Animations */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: slideUp 0.4s ease forwards;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.top-actions {
+    justify-self: end;
 }

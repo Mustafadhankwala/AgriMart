@@ -5,6 +5,7 @@ const router = express.Router();
 const {
   createProduct,
   getProducts,
+  getProductById,
   updateProduct,
   deleteProduct,
 } = require("../controllers/product.controller.js");
@@ -16,7 +17,8 @@ const { validateObjectIdParam, validateProduct } = require("../middleware/valida
 
 router.post("/", protect, farmerOnly, upload.single("image"), validateProduct, createProduct);
 router.get("/", getProducts);
-router.put("/:id", protect, farmerOnly, validateObjectIdParam(), upload.single("image"), updateProduct);
+router.get("/:id", validateObjectIdParam(), getProductById);
+router.put("/:id", protect, farmerOrAdmin, validateObjectIdParam(), upload.single("image"), updateProduct);
 router.delete("/:id", protect, farmerOrAdmin, validateObjectIdParam(), deleteProduct);
 
 module.exports = router;

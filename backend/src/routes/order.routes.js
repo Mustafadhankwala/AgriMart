@@ -7,10 +7,11 @@ const {
   getFarmerOrders,
   getOrderById,
   updateOrderStatus,
+  getAllOrders,
 } = require("../controllers/order.controller.js");
 
 const { protect } = require("../middleware/auth.middleware.js");
-const { authorize, retailerOnly } = require("../middleware/role.middleware.js");
+const { authorize, retailerOnly, adminOnly } = require("../middleware/role.middleware.js");
 const {
   validateObjectIdParam,
   validateOrder,
@@ -22,6 +23,9 @@ const {
 // GET    /api/orders/my-orders → retailer sees their own orders
 router.post("/", protect, retailerOnly, validateOrder, placeOrder);
 router.get("/my-orders", protect, retailerOnly, getMyOrders);
+
+// ── Admin routes ─────────────────────────────────────────────
+router.get("/admin/all-orders", protect, adminOnly, getAllOrders);
 
 // ── Farmer routes ────────────────────────────────────────────
 // GET    /api/orders/farmer-orders  → farmer sees orders received
