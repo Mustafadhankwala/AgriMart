@@ -7,7 +7,8 @@ const { createNotification } = require("../utils/notificationHelper");
 
 const getUploadedImagePath = (req) => {
   if (!req.file) return null;
-  return `/uploads/${req.file.filename}`;
+  // For Cloudinary, req.file.path contains the URL
+  return req.file.path;
 };
 
 const createProduct = asyncHandler(async (req, res) => {
