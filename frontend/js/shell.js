@@ -33,7 +33,7 @@ function dashboardShell(activePage, title, subtitle, content, titleKey, subtitle
   const displayEyebrow = eyebrowKey ? t(eyebrowKey, eyebrowKey.replace('nav_', '').toUpperCase()) : 'DASHBOARD';
 
   let navLinks = "";
-  
+
   if (role === 'admin') {
     navLinks = `
       <a class="nav-link" data-nav="admin-dashboard" href="../admin/dashboard.html">
@@ -149,7 +149,7 @@ window.toggleNotifMenu = (e) => {
   if (e) e.stopPropagation();
   const menu = document.getElementById('notificationMenu');
   if (!menu) return;
-  
+
   if (menu.style.display === 'block') {
     menu.style.display = 'none';
   } else {
@@ -166,7 +166,7 @@ window.onclick = () => {
 window.markAsRead = async (id, link) => {
   const auth = JSON.parse(localStorage.getItem('agriAuthToken'));
   if (!auth) return;
-  
+
   await fetch('http://localhost:5000/api/notifications/' + id + '/read', {
     method: 'PUT',
     headers: { 'Authorization': 'Bearer ' + auth.token }
@@ -178,7 +178,7 @@ window.markAsRead = async (id, link) => {
 window.markAllRead = async () => {
   const auth = JSON.parse(localStorage.getItem('agriAuthToken'));
   if (!auth) return;
-  
+
   await fetch('http://localhost:5000/api/notifications/mark-all-read', {
     method: 'PUT',
     headers: { 'Authorization': 'Bearer ' + auth.token }
@@ -198,10 +198,10 @@ async function initShellNotifications() {
     const menu = document.getElementById('notificationMenu');
     if (menu) menu.classList.remove('open');
   };
-  
+
   if (menu) menu.onclick = (e) => e.stopPropagation();
 
-  window.fetchNotifs = async function() {
+  window.fetchNotifs = async function () {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
@@ -211,7 +211,7 @@ async function initShellNotifications() {
         signal: controller.signal
       });
       clearTimeout(timeoutId);
-      
+
       const data = await res.json();
       if (data.success && menu) {
         const unread = data.data.filter(n => !n.isRead).length;
@@ -233,7 +233,7 @@ async function initShellNotifications() {
             <button onclick="window.markAllRead()" style="background:none; border:none; color:var(--accent); font-size:11px; font-weight:600; cursor:pointer;">Mark all read</button>
           </div>
         `;
-        
+
         html += data.data.map(n => `
           <div class="notification-item ${n.isRead ? 'read' : ''}" onclick="window.markAsRead('${n._id}', '${n.link}')" style="cursor:pointer; opacity: ${n.isRead ? 0.6 : 1}">
             <strong>${n.title}</strong>

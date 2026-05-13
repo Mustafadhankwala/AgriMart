@@ -461,12 +461,33 @@ function renderCart() {
       </div>
     </div>`).join("");
 
+  const totalWeight = cart.reduce((sum, item) => sum + item.count, 0);
   const subtotal = cart.reduce((sum, item) => sum + item.price * item.count, 0);
+  
+  const minWeight = 15;
+  const isBelowMin = totalWeight < minWeight;
+
   summary.innerHTML = `
-    <div class="summary-line"><span>${t("lbl_items", "Items")}</span><span>${cart.reduce((sum, item) => sum + item.count, 0)}</span></div>
+    <div class="summary-line"><span>${t("lbl_items", "Items")}</span><span>${cart.length}</span></div>
+    <div class="summary-line"><span>${t("lbl_total_weight", "Total Weight")}</span><span style="${isBelowMin ? 'color:#ef4444;font-weight:700;' : ''}">${totalWeight} kg</span></div>
     <div class="summary-line"><span>${t("lbl_subtotal", "Subtotal")}</span><span>${money(subtotal)}</span></div>
     <div class="summary-line"><span>${t("lbl_payment_method", "Payment")}</span><span>${t("lbl_cash_pickup", "Cash on pickup")}</span></div>
-    <div class="summary-line total"><span>${t("lbl_total", "Total")}</span><span>${money(subtotal)}</span></div>`;
+    <div class="summary-line total"><span>${t("lbl_total", "Total")}</span><span>${money(subtotal)}</span></div>
+    ${isBelowMin ? `<div style="color:#ef4444;font-size:12px;margin-top:10px;padding:8px;background:#fee2e2;border-radius:6px;line-height:1.4;">⚠️ ${t("msg_min_order_limit", "Minimum total order must be 15kg to proceed.")}</div>` : ''}
+  `;
+
+  const checkoutBtn = $("a[href='checkout.html']");
+  if (checkoutBtn) {
+    if (isBelowMin) {
+      checkoutBtn.style.opacity = "0.5";
+      checkoutBtn.style.pointerEvents = "none";
+      checkoutBtn.classList.add("disabled");
+    } else {
+      checkoutBtn.style.opacity = "1";
+      checkoutBtn.style.pointerEvents = "auto";
+      checkoutBtn.classList.remove("disabled");
+    }
+  }
 
   $$("[data-inc]").forEach(button => button.addEventListener("click", () => adjustCart(button.dataset.inc, 1)));
   $$("[data-dec]").forEach(button => button.addEventListener("click", () => adjustCart(button.dataset.dec, -1)));
@@ -564,8 +585,13 @@ function renderCheckout() {
     event.preventDefault();
     const form = event.currentTarget;
     const errors = validateFields(form);
-    if (errors || !cart.length) {
-      showToast(cart.length ? "Please complete the required checkout fields." : "Your cart is empty.");
+    const totalWeight = cart.reduce((sum, item) => sum + item.count, 0);
+    if (errors || !cart.length || totalWeight < 15) {
+      if (totalWeight < 15 && cart.length > 0) {
+        showToast("Minimum total order must be 15kg to place order.");
+      } else {
+        showToast(cart.length ? "Please complete the required checkout fields." : "Your cart is empty.");
+      }
       return;
     }
 

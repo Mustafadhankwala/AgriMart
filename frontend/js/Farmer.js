@@ -1,22 +1,22 @@
 // ── NAVIGATION ────────────────────────────────────────────
-function goTo(pageId){
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.getElementById("page-"+pageId)?.classList.add("active");
-  document.querySelectorAll("#sidebar .side-menu li").forEach(li=>{
-    li.classList.toggle("active", li.dataset.page===pageId);
+function goTo(pageId) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById("page-" + pageId)?.classList.add("active");
+  document.querySelectorAll("#sidebar .side-menu li").forEach(li => {
+    li.classList.toggle("active", li.dataset.page === pageId);
   });
 }
 
-document.querySelectorAll('#sidebar .side-menu li').forEach(li=>{
-  li.addEventListener('click',e=>{
+document.querySelectorAll('#sidebar .side-menu li').forEach(li => {
+  li.addEventListener('click', e => {
     e.preventDefault();
-    if(li.dataset.page) goTo(li.dataset.page);
+    if (li.dataset.page) goTo(li.dataset.page);
   });
 });
 
 
 // ── SIDEBAR TOGGLE ────────────────────────────────────────
-document.getElementById('menuToggle')?.addEventListener('click',()=>{
+document.getElementById('menuToggle')?.addEventListener('click', () => {
   document.getElementById('sidebar').classList.toggle('collapsed');
 });
 
@@ -148,10 +148,10 @@ async function loadFarmerProducts() {
     // Update My Store Stats
     const totalEl = document.getElementById('storeTotalProducts');
     if (totalEl) totalEl.textContent = products.length;
-    
+
     const outOfStockEl = document.getElementById('storeOutOfStock');
     if (outOfStockEl) outOfStockEl.textContent = products.filter(p => Number(p.quantity) <= 0).length;
-    
+
     const ratingEl = document.getElementById('storeRating');
     if (ratingEl) ratingEl.textContent = products.length > 0 ? '4.8★' : '0.0★';
 
@@ -478,10 +478,10 @@ async function loadFarmerDashboardAnalytics() {
       document.getElementById('dashTotalRevenue') && (document.getElementById('dashTotalRevenue').textContent = formatCurrency(stats.totalRevenue));
       document.getElementById('dashDeliveredOrders') && (document.getElementById('dashDeliveredOrders').textContent = Number(stats.deliveredOrders || 0).toLocaleString('en-IN'));
       document.getElementById('dashTotalProducts') && (document.getElementById('dashTotalProducts').textContent = Number(stats.totalProducts || 0).toLocaleString('en-IN'));
-      
+
       const pendingEl = document.getElementById('dashPendingOrders');
       if (pendingEl) pendingEl.textContent = stats.pendingOrders || 0;
-      
+
       const lowStockEl = document.getElementById('dashLowStockCount');
       if (lowStockEl) lowStockEl.textContent = stats.lowStockCount || 0;
 
@@ -507,13 +507,13 @@ function renderAnalyticsTab(stats, topProducts) {
   // Stats Cards
   const revEl = document.getElementById('analyticsRevenue');
   if (revEl) revEl.textContent = formatCurrency(stats.totalRevenue);
-  
+
   const ordEl = document.getElementById('analyticsOrders');
   if (ordEl) ordEl.textContent = Number(stats.totalOrders || 0).toLocaleString('en-IN');
-  
+
   const satEl = document.getElementById('analyticsSatisfaction');
   if (satEl) satEl.textContent = '94%'; // Simulated for now or could be stats.satisfaction
-  
+
   const retEl = document.getElementById('analyticsReturnRate');
   if (retEl) retEl.textContent = '1.2%'; // Simulated for now
 
@@ -560,8 +560,8 @@ function renderAnalyticsTab(stats, topProducts) {
       const maxRev = Math.max(...topProducts.map(p => p.totalRevenue), 1);
       topList.innerHTML = `<div style="display:flex;flex-direction:column;gap:16px;">
         ${topProducts.map(p => {
-          const perc = (p.totalRevenue / maxRev) * 100;
-          return `
+        const perc = (p.totalRevenue / maxRev) * 100;
+        return `
             <div>
               <div style="display:flex;justify-content:space-between;font-size:14px;margin-bottom:4px;">
                 <span>${p.name}</span><span style="color:var(--green);font-weight:700;">${formatCurrency(p.totalRevenue)}</span>
@@ -569,7 +569,7 @@ function renderAnalyticsTab(stats, topProducts) {
               <div class="progress-bar"><div class="progress-fill" style="width:${perc}%"></div></div>
             </div>
           `;
-        }).join('')}
+      }).join('')}
       </div>`;
     }
   }
@@ -629,16 +629,16 @@ async function submitAddProduct(event) {
 }
 
 const addProductForm = document.getElementById('addProductForm');
- if (addProductForm) {
-   addProductForm.addEventListener('submit', submitAddProduct);
- }
+if (addProductForm) {
+  addProductForm.addEventListener('submit', submitAddProduct);
+}
 
- const editProductForm = document.getElementById('editProductForm');
- if (editProductForm) {
-   editProductForm.addEventListener('submit', submitEditProduct);
- }
+const editProductForm = document.getElementById('editProductForm');
+if (editProductForm) {
+  editProductForm.addEventListener('submit', submitEditProduct);
+}
 
- document.getElementById('productImage')?.addEventListener('change', event => {
+document.getElementById('productImage')?.addEventListener('change', event => {
   const file = event.target.files?.[0];
   const preview = document.getElementById('productImagePreview');
   if (!preview) return;
@@ -662,66 +662,66 @@ const addProductForm = document.getElementById('addProductForm');
 });
 
 // ── TODO ──────────────────────────────────────────────────
-document.getElementById('addTodoBtn')?.addEventListener('click',()=>{
+document.getElementById('addTodoBtn')?.addEventListener('click', () => {
   document.getElementById('addTodoModal').classList.add('open');
 });
 
-function addTodo(){
-  const val=document.getElementById('newTodoInput').value.trim();
-  if(!val)return;
-  const li=document.createElement('div');
-  li.className='todo-item pending-t';
-  li.innerHTML=`<input type="checkbox" class="todo-cb"><span class="todo-text">${val}</span><i class='bx bx-dots-vertical-rounded todo-more'></i>`;
-  li.querySelector('.todo-cb').addEventListener('change',function(){
-    li.classList.toggle('done',this.checked);
-    li.classList.toggle('pending-t',!this.checked);
-    li.querySelector('.todo-text').style.textDecoration=this.checked?'line-through':'none';
-    li.querySelector('.todo-text').style.color=this.checked?'var(--muted)':'var(--dark)';
+function addTodo() {
+  const val = document.getElementById('newTodoInput').value.trim();
+  if (!val) return;
+  const li = document.createElement('div');
+  li.className = 'todo-item pending-t';
+  li.innerHTML = `<input type="checkbox" class="todo-cb"><span class="todo-text">${val}</span><i class='bx bx-dots-vertical-rounded todo-more'></i>`;
+  li.querySelector('.todo-cb').addEventListener('change', function () {
+    li.classList.toggle('done', this.checked);
+    li.classList.toggle('pending-t', !this.checked);
+    li.querySelector('.todo-text').style.textDecoration = this.checked ? 'line-through' : 'none';
+    li.querySelector('.todo-text').style.color = this.checked ? 'var(--muted)' : 'var(--dark)';
   });
   document.getElementById('todoList').appendChild(li);
-  document.getElementById('newTodoInput').value='';
+  document.getElementById('newTodoInput').value = '';
   document.getElementById('addTodoModal').classList.remove('open');
 }
 
 // existing checkboxes
-document.querySelectorAll('.todo-cb').forEach(cb=>{
-  cb.addEventListener('change',function(){
-    const item=this.closest('.todo-item');
-    item.classList.toggle('done',this.checked);
-    item.classList.toggle('pending-t',!this.checked);
+document.querySelectorAll('.todo-cb').forEach(cb => {
+  cb.addEventListener('change', function () {
+    const item = this.closest('.todo-item');
+    item.classList.toggle('done', this.checked);
+    item.classList.toggle('pending-t', !this.checked);
   });
 });
 
 // ── CHAT ──────────────────────────────────────────────────
-function sendMsg(){
-  const inp=document.getElementById('chatInput');
-  const val=inp.value.trim();
-  if(!val)return;
-  const body=document.querySelector('.msg-chat-body');
-  const b=document.createElement('div');
-  b.className='bubble sent';
-  b.textContent=val;
+function sendMsg() {
+  const inp = document.getElementById('chatInput');
+  const val = inp.value.trim();
+  if (!val) return;
+  const body = document.querySelector('.msg-chat-body');
+  const b = document.createElement('div');
+  b.className = 'bubble sent';
+  b.textContent = val;
   body.appendChild(b);
-  body.scrollTop=body.scrollHeight;
-  inp.value='';
+  body.scrollTop = body.scrollHeight;
+  inp.value = '';
 }
-document.getElementById('chatInput')?.addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg();});
+document.getElementById('chatInput')?.addEventListener('keydown', e => { if (e.key === 'Enter') sendMsg(); });
 
 // msg list item click
-document.querySelectorAll('.msg-item').forEach(item=>{
-  item.addEventListener('click',()=>{
-    document.querySelectorAll('.msg-item').forEach(i=>i.classList.remove('active'));
+document.querySelectorAll('.msg-item').forEach(item => {
+  item.addEventListener('click', () => {
+    document.querySelectorAll('.msg-item').forEach(i => i.classList.remove('active'));
     item.classList.add('active');
   });
 });
 
 // ── CLOSE MODAL ON OVERLAY CLICK ──────────────────────────
-document.querySelectorAll('.modal-overlay').forEach(o=>{
-  o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');});
+document.querySelectorAll('.modal-overlay').forEach(o => {
+  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
 });
 
 // ── SEARCH FUNCTIONALITY ─────────────────────────────────
-document.getElementById('farmerSearchInput')?.addEventListener('keydown', function(e) {
+document.getElementById('farmerSearchInput')?.addEventListener('keydown', function (e) {
   if (e.key !== 'Enter') return;
   const query = e.target.value.toLowerCase().trim();
   if (!query) {
@@ -777,10 +777,10 @@ async function loadTeamMembers() {
 
     const teamPayload = await teamRes.json();
     const profilePayload = await profileRes.json();
-    
+
     const members = teamPayload.data || [];
     const owner = profilePayload.data || {};
-    
+
     // Combine owner with team members
     const ownerEntry = {
       _id: 'owner',
@@ -798,7 +798,7 @@ async function loadTeamMembers() {
       const initials = m.name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase();
       const joinDate = new Date(m.joinDate).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
       const statusClass = m.status === 'Active' ? 'badge-active' : (m.status === 'On Leave' ? 'badge-onleave' : 'badge-inactive');
-      
+
       return `
         <tr>
           <td><div class="user-cell"><div class="avatar-placeholder">${initials}</div>${m.name}</div></td>
@@ -865,12 +865,12 @@ function removeMember(memberId, memberName) {
 }
 
 // Add Member Form
-document.getElementById('addMemberForm')?.addEventListener('submit', async function(e) {
+document.getElementById('addMemberForm')?.addEventListener('submit', async function (e) {
   e.preventDefault();
-  const name  = document.getElementById('memberName').value.trim();
-  const role  = document.getElementById('memberRole').value;
+  const name = document.getElementById('memberName').value.trim();
+  const role = document.getElementById('memberRole').value;
   const phone = document.getElementById('memberPhone').value.trim();
-  
+
   if (!name || !role || !phone) {
     showFarmerToast('Please fill all required fields.');
     return;
@@ -887,7 +887,7 @@ document.getElementById('addMemberForm')?.addEventListener('submit', async funct
       method: 'POST',
       body: { name, role, phone }
     });
-    
+
     if (res.ok) {
       showFarmerToast(name + ' added to the team!');
       document.getElementById('addMemberModal')?.classList.remove('open');
@@ -972,7 +972,7 @@ async function loadFarmerProfile() {
   }
 
   // Read-only: from auth token (or DB if synced)
-  const name  = dbProfile.name  || auth?.user?.name  || '';
+  const name = dbProfile.name || auth?.user?.name || '';
   const email = dbProfile.email || auth?.user?.email || '';
   const initials = name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase() || '?';
 
@@ -992,15 +992,15 @@ async function loadFarmerProfile() {
   if (pnameEl && name) pnameEl.textContent = name;
 
   // Personal info fields
-  if (document.getElementById('profileName'))  document.getElementById('profileName').value  = name;
+  if (document.getElementById('profileName')) document.getElementById('profileName').value = name;
   if (document.getElementById('profileEmail')) document.getElementById('profileEmail').value = email;
-  if (document.getElementById('profilePhone'))    document.getElementById('profilePhone').value    = dbProfile.phone    || '';
+  if (document.getElementById('profilePhone')) document.getElementById('profilePhone').value = dbProfile.phone || '';
   if (document.getElementById('profileLocation')) document.getElementById('profileLocation').value = dbProfile.location || '';
 
   // Farm details fields
-  if (document.getElementById('profileFarmName'))      document.getElementById('profileFarmName').value      = dbProfile.farmName      || '';
-  if (document.getElementById('profileFarmSize'))      document.getElementById('profileFarmSize').value      = dbProfile.farmSize      || '';
-  if (document.getElementById('profileCrops'))         document.getElementById('profileCrops').value         = dbProfile.primaryCrops || '';
+  if (document.getElementById('profileFarmName')) document.getElementById('profileFarmName').value = dbProfile.farmName || '';
+  if (document.getElementById('profileFarmSize')) document.getElementById('profileFarmSize').value = dbProfile.farmSize || '';
+  if (document.getElementById('profileCrops')) document.getElementById('profileCrops').value = dbProfile.primaryCrops || '';
   if (document.getElementById('profileCertification')) document.getElementById('profileCertification').value = dbProfile.certification || '';
 }
 
@@ -1077,18 +1077,18 @@ darkToggle?.addEventListener('click', () => {
 });
 
 // ── LOGOUT ────────────────────────────────────────
-document.querySelector('.logout')?.addEventListener('click', function(e) {
+document.querySelector('.logout')?.addEventListener('click', function (e) {
   e.preventDefault();
   clearAuth();
   location.href = '../../login.html';
 });
 
 // responsive auto-collapse
-if(window.innerWidth<768){
+if (window.innerWidth < 768) {
   document.getElementById('sidebar')?.classList.add('collapsed');
 }
-window.addEventListener('resize',()=>{
-  if(window.innerWidth<768){
+window.addEventListener('resize', () => {
+  if (window.innerWidth < 768) {
     document.getElementById('sidebar')?.classList.add('collapsed');
   }
 });
@@ -1100,21 +1100,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadFarmerProducts();
     loadTeamMembers();
     await loadFarmerProfile();
-    
+
     // Attach listeners after profile is loaded
     document.getElementById('savePersonalInfoBtn')?.addEventListener('click', handleSavePersonalInfo);
     document.getElementById('saveFarmDetailsBtn')?.addEventListener('click', handleSaveFarmDetails);
     document.getElementById('cancelPersonalInfoBtn')?.addEventListener('click', loadFarmerProfile);
-    
+
     // Dashboard & Notifications init
     loadFarmerDashboardAnalytics();
     updateNotificationBadge();
     loadFarmerNotifications();
 
     setInterval(() => {
-        loadFarmerDashboardAnalytics();
-        updateNotificationBadge();
-        loadFarmerNotifications();
+      loadFarmerDashboardAnalytics();
+      updateNotificationBadge();
+      loadFarmerNotifications();
     }, 30000); // 30s polling
     console.log('Farmer.js ready');
   } catch (err) {
@@ -1125,11 +1125,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ── REAL-TIME NOTIFICATIONS ─────────────────────
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
-  const mins  = Math.floor(diff / 60000);
-  if (mins < 1)   return 'Just now';
-  if (mins < 60)  return `${mins} min ago`;
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return `${mins} min ago`;
   const hrs = Math.floor(mins / 60);
-  if (hrs < 24)   return `${hrs} hour${hrs > 1 ? 's' : ''} ago`;
+  if (hrs < 24) return `${hrs} hour${hrs > 1 ? 's' : ''} ago`;
   const days = Math.floor(hrs / 24);
   return `${days} day${days > 1 ? 's' : ''} ago`;
 }

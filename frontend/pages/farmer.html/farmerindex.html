@@ -30,7 +30,8 @@
             class="text" data-i18n="nav_dashboard">Dashboard</span></a>
       </li>
       <li data-page="mystore">
-        <a href="#" onclick="event.preventDefault();goTo('mystore')"><i class='bx bxs-store'></i><span class="text" data-i18n="nav_store">My
+        <a href="#" onclick="event.preventDefault();goTo('mystore')"><i class='bx bxs-store'></i><span class="text"
+            data-i18n="nav_store">My
             Store</span></a>
       </li>
       <li data-page="analytics">
@@ -38,8 +39,8 @@
             class="text" data-i18n="nav_analytics">Analytics</span></a>
       </li>
       <li data-page="team">
-        <a href="#" onclick="event.preventDefault();goTo('team')"><i class='bx bxs-group'></i><span
-            class="text" data-i18n="nav_team">Team</span></a>
+        <a href="#" onclick="event.preventDefault();goTo('team')"><i class='bx bxs-group'></i><span class="text"
+            data-i18n="nav_team">Team</span></a>
       </li>
     </ul>
 
@@ -50,18 +51,18 @@
             class="text" data-i18n="nav_profile">Profile</span></a>
       </li>
       <li data-page="notifications">
-        <a href="#" onclick="event.preventDefault();goTo('notifications')"><i class='bx bxs-bell'></i><span
-            class="text" data-i18n="nav_notifications">Notifications</span></a>
+        <a href="#" onclick="event.preventDefault();goTo('notifications')"><i class='bx bxs-bell'></i><span class="text"
+            data-i18n="nav_notifications">Notifications</span></a>
       </li>
       <li data-page="settings">
-        <a href="#" onclick="event.preventDefault();goTo('settings')"><i class='bx bxs-cog'></i><span
-            class="text" data-i18n="nav_settings">Settings</span></a>
+        <a href="#" onclick="event.preventDefault();goTo('settings')"><i class='bx bxs-cog'></i><span class="text"
+            data-i18n="nav_settings">Settings</span></a>
       </li>
     </ul>
 
     <div class="sidebar-bottom">
-      <a href="#" class="logout" id="farmerLogout"><i class='bx bxs-log-out-circle'></i><span
-          class="text" data-i18n="nav_logout">Logout</span></a>
+      <a href="#" class="logout" id="farmerLogout"><i class='bx bxs-log-out-circle'></i><span class="text"
+          data-i18n="nav_logout">Logout</span></a>
     </div>
   </section>
 
@@ -74,17 +75,19 @@
 
       <div class="search-wrap">
         <i class='bx bx-search'></i>
-        <input type="text" id="farmerSearchInput" placeholder="Search products, orders…" data-i18n-placeholder="lbl_search_ph">
+        <input type="text" id="farmerSearchInput" placeholder="Search products, orders…"
+          data-i18n-placeholder="lbl_search_ph">
       </div>
 
       <div class="nav-spacer"></div>
 
       <div class="nav-actions">
-        <select id="langSelect" class="nav-btn" onchange="changeLanguage(this.value)" style="padding:4px 8px; border:1px solid #ddd; border-radius:4px; font-size:12px; font-weight:600; cursor:pointer;">
-            <option value="en">EN</option>
-            <option value="hi">HI</option>
-            <option value="mr">MR</option>
-            <option value="pa">PA</option>
+        <select id="langSelect" class="nav-btn" onchange="changeLanguage(this.value)"
+          style="padding:4px 8px; border:1px solid #ddd; border-radius:4px; font-size:12px; font-weight:600; cursor:pointer;">
+          <option value="en">EN</option>
+          <option value="hi">HI</option>
+          <option value="mr">MR</option>
+          <option value="pa">PA</option>
         </select>
 
         <button class="nav-btn" onclick="goTo('notifications')">
@@ -122,7 +125,8 @@
           <div>
             <div class="stat-val" id="dashTotalOrders">0</div>
             <div class="stat-label" data-i18n="stat_orders">Total Orders</div>
-            <div class="stat-delta"><span id="dashPendingOrders">0</span> <span data-i18n="sub_pending">pending</span></div>
+            <div class="stat-delta"><span id="dashPendingOrders">0</span> <span data-i18n="sub_pending">pending</span>
+            </div>
           </div>
         </div>
         <div class="stat-card">
@@ -155,7 +159,8 @@
         <div class="card">
           <div class="card-head">
             <h3 data-i18n="hdr_recent">Recent Orders</h3>
-            <span class="badge-status badge-active"><span id="recentOrderCount">0</span> <span data-i18n="lbl_orders_count">orders</span></span>
+            <span class="badge-status badge-active"><span id="recentOrderCount">0</span> <span
+                data-i18n="lbl_orders_count">orders</span></span>
           </div>
           <div class="card-body">
             <div class="table-wrap">
@@ -182,7 +187,8 @@
         <div class="card">
           <div class="card-head">
             <h3 data-i18n="card_low_stock">Low Stock Warnings</h3>
-            <span class="badge-status badge-inactive" id="lowStockThreshold"><span data-i18n="sub_threshold">Threshold</span> 20</span>
+            <span class="badge-status badge-inactive" id="lowStockThreshold"><span
+                data-i18n="sub_threshold">Threshold</span> 20</span>
           </div>
           <div class="card-body">
             <div class="analytics-list" id="lowStockList">
@@ -357,7 +363,8 @@
           <div>
             <div class="stat-val" id="analyticsRevenue">₹0</div>
             <div class="stat-label" data-i18n="stat_monthly_rev">Monthly Revenue</div>
-            <div class="stat-delta up"><span id="revenueTrend">▲ 0%</span> <span data-i18n="sub_vs_last">vs last month</span></div>
+            <div class="stat-delta up"><span id="revenueTrend">▲ 0%</span> <span data-i18n="sub_vs_last">vs last
+                month</span></div>
           </div>
         </div>
         <div class="stat-card">
@@ -473,7 +480,8 @@
             <li><a class="active" href="#" data-i18n="nav_team">Team Members</a></li>
           </ul>
         </div>
-        <button class="btn-primary" onclick="document.getElementById('addMemberModal').classList.add('open')"><i class='bx bx-plus'></i> <span data-i18n="btn_add_member">Add Member</span></button>
+        <button class="btn-primary" onclick="document.getElementById('addMemberModal').classList.add('open')"><i
+            class='bx bx-plus'></i> <span data-i18n="btn_add_member">Add Member</span></button>
       </div>
 
       <div class="card">
@@ -521,8 +529,10 @@
           <div class="profile-name" id="profileHeroName">—</div>
           <div class="profile-meta" id="profileHeroMeta" data-i18n="prof_verified">🌾 Farmer · AgriMart</div>
           <div class="profile-badges">
-            <span class="profile-badge"><i class='bx bxs-check-shield'></i> <span data-i18n="prof_verified_badge">Verified Farmer</span></span>
-            <span class="profile-badge" id="profileOrdersBadge"><i class='bx bxs-package'></i> <span id="profOrdersVal">0</span> <span data-i18n="lbl_orders_count">Orders</span></span>
+            <span class="profile-badge"><i class='bx bxs-check-shield'></i> <span
+                data-i18n="prof_verified_badge">Verified Farmer</span></span>
+            <span class="profile-badge" id="profileOrdersBadge"><i class='bx bxs-package'></i> <span
+                id="profOrdersVal">0</span> <span data-i18n="lbl_orders_count">Orders</span></span>
           </div>
         </div>
       </div>
@@ -533,10 +543,15 @@
             <h3 data-i18n="prof_personal">Personal Information</h3>
           </div>
           <div class="card-body">
-            <div class="form-group"><label data-i18n="lbl_fullname">Full Name</label><input id="profileName" class="form-control" placeholder="Your full name" readonly style="opacity:.75;cursor:not-allowed;"></div>
-            <div class="form-group"><label data-i18n="lbl_email">Email</label><input id="profileEmail" class="form-control" placeholder="Your email" readonly style="opacity:.75;cursor:not-allowed;"></div>
-            <div class="form-group"><label data-i18n="lbl_phone">Phone</label><input id="profilePhone" class="form-control" placeholder="e.g. +91 98765 43210"></div>
-            <div class="form-group"><label data-i18n="lbl_location">Location</label><input id="profileLocation" class="form-control" placeholder="e.g. Bhopal, Madhya Pradesh"></div>
+            <div class="form-group"><label data-i18n="lbl_fullname">Full Name</label><input id="profileName"
+                class="form-control" placeholder="Your full name" readonly style="opacity:.75;cursor:not-allowed;">
+            </div>
+            <div class="form-group"><label data-i18n="lbl_email">Email</label><input id="profileEmail"
+                class="form-control" placeholder="Your email" readonly style="opacity:.75;cursor:not-allowed;"></div>
+            <div class="form-group"><label data-i18n="lbl_phone">Phone</label><input id="profilePhone"
+                class="form-control" placeholder="e.g. +91 98765 43210"></div>
+            <div class="form-group"><label data-i18n="lbl_location">Location</label><input id="profileLocation"
+                class="form-control" placeholder="e.g. Bhopal, Madhya Pradesh"></div>
             <div class="form-actions">
               <button class="btn-primary" id="savePersonalInfoBtn" data-i18n="btn_save">Save Changes</button>
               <button class="btn-primary btn-outline" id="cancelPersonalInfoBtn" data-i18n="btn_cancel">Cancel</button>
@@ -548,10 +563,14 @@
             <h3 data-i18n="prof_farm">Farm Details</h3>
           </div>
           <div class="card-body">
-            <div class="form-group"><label data-i18n="lbl_farm_name">Farm Name</label><input id="profileFarmName" class="form-control" placeholder="e.g. Sunrise Organic Farm"></div>
-            <div class="form-group"><label data-i18n="lbl_farm_size">Farm Size</label><input id="profileFarmSize" class="form-control" placeholder="e.g. 120 acres"></div>
-            <div class="form-group"><label data-i18n="lbl_crops">Primary Crops</label><input id="profileCrops" class="form-control" placeholder="e.g. Wheat, Rice, Corn"></div>
-            <div class="form-group"><label data-i18n="lbl_cert">Certification</label><input id="profileCertification" class="form-control" placeholder="e.g. Organic Certified (2024)"></div>
+            <div class="form-group"><label data-i18n="lbl_farm_name">Farm Name</label><input id="profileFarmName"
+                class="form-control" placeholder="e.g. Sunrise Organic Farm"></div>
+            <div class="form-group"><label data-i18n="lbl_farm_size">Farm Size</label><input id="profileFarmSize"
+                class="form-control" placeholder="e.g. 120 acres"></div>
+            <div class="form-group"><label data-i18n="lbl_crops">Primary Crops</label><input id="profileCrops"
+                class="form-control" placeholder="e.g. Wheat, Rice, Corn"></div>
+            <div class="form-group"><label data-i18n="lbl_cert">Certification</label><input id="profileCertification"
+                class="form-control" placeholder="e.g. Organic Certified (2024)"></div>
             <div class="form-actions">
               <button class="btn-primary" id="saveFarmDetailsBtn" data-i18n="btn_save">Save Changes</button>
             </div>
@@ -676,10 +695,12 @@
     <div class="modal" style="max-width:400px;">
       <div class="modal-head">
         <h3 data-i18n="hdr_assign_role">Assign Role</h3>
-        <i class='bx bx-x modal-close' onclick="document.getElementById('assignRoleModal').classList.remove('open')"></i>
+        <i class='bx bx-x modal-close'
+          onclick="document.getElementById('assignRoleModal').classList.remove('open')"></i>
       </div>
       <div class="modal-body">
-        <p style="margin-bottom:16px;"><span data-i18n="lbl_changing_role">Changing role for:</span> <strong id="assignRoleMemberName"></strong></p>
+        <p style="margin-bottom:16px;"><span data-i18n="lbl_changing_role">Changing role for:</span> <strong
+            id="assignRoleMemberName"></strong></p>
         <div class="form-group">
           <label data-i18n="lbl_select_new_role">Select New Role</label>
           <select id="assignRoleSelect" class="form-control">
@@ -693,7 +714,9 @@
         </div>
         <div class="form-actions" style="margin-top:16px;">
           <button class="btn-primary" id="confirmAssignRoleBtn" data-i18n="btn_save_role">Save Role</button>
-          <button class="btn-primary btn-outline" onclick="document.getElementById('assignRoleModal').classList.remove('open')" data-i18n="btn_cancel">Cancel</button>
+          <button class="btn-primary btn-outline"
+            onclick="document.getElementById('assignRoleModal').classList.remove('open')"
+            data-i18n="btn_cancel">Cancel</button>
         </div>
       </div>
     </div>
@@ -711,7 +734,8 @@
           <div class="form-grid">
             <div class="form-group">
               <label data-i18n="lbl_fullname">Full Name</label>
-              <input id="memberName" class="form-control" data-i18n-placeholder="ph_full_name" placeholder="e.g. Arjun Singh" required>
+              <input id="memberName" class="form-control" data-i18n-placeholder="ph_full_name"
+                placeholder="e.g. Arjun Singh" required>
             </div>
             <div class="form-group">
               <label data-i18n="lbl_role">Role</label>
@@ -729,7 +753,8 @@
           <div class="form-grid">
             <div class="form-group">
               <label data-i18n="lbl_phone">Phone Number</label>
-              <input id="memberPhone" class="form-control" data-i18n-placeholder="ph_phone" placeholder="+91 XXXXX XXXXX" required>
+              <input id="memberPhone" class="form-control" data-i18n-placeholder="ph_phone"
+                placeholder="+91 XXXXX XXXXX" required>
             </div>
             <div class="form-group">
               <label data-i18n="lbl_join_date">Join Date</label>
@@ -738,7 +763,9 @@
           </div>
           <div class="form-actions" style="margin-top:16px;">
             <button class="btn-primary" type="submit" data-i18n="btn_add_member">Add Member</button>
-            <button class="btn-primary btn-outline" type="button" onclick="document.getElementById('addMemberModal').classList.remove('open')" data-i18n="btn_cancel">Cancel</button>
+            <button class="btn-primary btn-outline" type="button"
+              onclick="document.getElementById('addMemberModal').classList.remove('open')"
+              data-i18n="btn_cancel">Cancel</button>
           </div>
         </form>
       </div>
@@ -756,8 +783,9 @@
       <div class="modal-body">
         <form id="addProductForm">
           <div class="form-grid">
-            <div class="form-group"><label data-i18n="lbl_name">Product Name</label><input id="productName" class="form-control"
-                data-i18n-placeholder="ph_prod_name" placeholder="e.g. Premium Wheat" required></div>
+            <div class="form-group"><label data-i18n="lbl_name">Product Name</label><input id="productName"
+                class="form-control" data-i18n-placeholder="ph_prod_name" placeholder="e.g. Premium Wheat" required>
+            </div>
             <div class="form-group"><label data-i18n="lbl_category">Category</label>
               <select id="productCategory" class="form-control" required>
                 <option value="Grains" data-i18n="opt_grains">Grains</option>
@@ -768,16 +796,20 @@
             </div>
           </div>
           <div class="form-grid">
-            <div class="form-group"><label data-i18n="lbl_price_kg">Price per kg (&#x20B9;)</label><input id="productPrice" class="form-control"
-                type="number" min="0" step="0.01" data-i18n-placeholder="ph_price" placeholder="64" required></div>
-            <div class="form-group"><label data-i18n="lbl_avail_stock">Available Stock (kg)</label><input id="productQuantity" class="form-control"
-                type="number" min="1" step="1" data-i18n-placeholder="ph_stock" placeholder="500" required></div>
+            <div class="form-group"><label data-i18n="lbl_price_kg">Price per kg (&#x20B9;)</label><input
+                id="productPrice" class="form-control" type="number" min="0" step="0.01"
+                data-i18n-placeholder="ph_price" placeholder="64" required></div>
+            <div class="form-group"><label data-i18n="lbl_avail_stock">Available Stock (kg)</label><input
+                id="productQuantity" class="form-control" type="number" min="1" step="1"
+                data-i18n-placeholder="ph_stock" placeholder="500" required></div>
           </div>
-          <div class="form-group"><label data-i18n="lbl_description">Description</label><textarea id="productDescription" class="form-control"
-              rows="3" data-i18n-placeholder="ph_desc" placeholder="Describe your product quality, origin…" style="resize:vertical;"></textarea></div>
-          <div class="form-group"><label data-i18n="lbl_prod_img">Product Image</label><input id="productImage" class="form-control" type="file"
-              accept="image/*"></div>
-          <div class="form-group"><label data-i18n="lbl_harvest_date">Harvest Date</label><input class="form-control" type="date"></div>
+          <div class="form-group"><label data-i18n="lbl_description">Description</label><textarea
+              id="productDescription" class="form-control" rows="3" data-i18n-placeholder="ph_desc"
+              placeholder="Describe your product quality, origin…" style="resize:vertical;"></textarea></div>
+          <div class="form-group"><label data-i18n="lbl_prod_img">Product Image</label><input id="productImage"
+              class="form-control" type="file" accept="image/*"></div>
+          <div class="form-group"><label data-i18n="lbl_harvest_date">Harvest Date</label><input class="form-control"
+              type="date"></div>
           <div class="form-actions">
             <button class="btn-primary" type="submit" data-i18n="btn_add_product">Add Product</button>
             <button class="btn-primary btn-outline" type="button" data-i18n="btn_cancel"
@@ -820,8 +852,8 @@
       <div class="modal-body">
         <form id="editProductForm">
           <div class="form-grid">
-            <div class="form-group"><label data-i18n="lbl_name">Product Name</label><input id="editProductName" class="form-control"
-                required></div>
+            <div class="form-group"><label data-i18n="lbl_name">Product Name</label><input id="editProductName"
+                class="form-control" required></div>
             <div class="form-group"><label data-i18n="lbl_category">Category</label>
               <select id="editProductCategory" class="form-control" required>
                 <option value="Grains" data-i18n="opt_grains">Grains</option>
@@ -832,15 +864,15 @@
             </div>
           </div>
           <div class="form-grid">
-            <div class="form-group"><label data-i18n="lbl_price_kg">Price per kg (&#x20B9;)</label><input id="editProductPrice"
-                class="form-control" type="number" min="0" step="0.01" required></div>
-            <div class="form-group"><label data-i18n="lbl_stock">Stock (kg)</label><input id="editProductQuantity" class="form-control"
-                type="number" min="0" step="1" required></div>
+            <div class="form-group"><label data-i18n="lbl_price_kg">Price per kg (&#x20B9;)</label><input
+                id="editProductPrice" class="form-control" type="number" min="0" step="0.01" required></div>
+            <div class="form-group"><label data-i18n="lbl_stock">Stock (kg)</label><input id="editProductQuantity"
+                class="form-control" type="number" min="0" step="1" required></div>
           </div>
-          <div class="form-group"><label data-i18n="lbl_description">Description</label><textarea id="editProductDescription" class="form-control"
-              rows="3" style="resize:vertical;"></textarea></div>
-          <div class="form-group"><label data-i18n="lbl_replace_img">Replace Image (optional)</label><input id="editProductImage"
-              class="form-control" type="file" accept="image/*"></div>
+          <div class="form-group"><label data-i18n="lbl_description">Description</label><textarea
+              id="editProductDescription" class="form-control" rows="3" style="resize:vertical;"></textarea></div>
+          <div class="form-group"><label data-i18n="lbl_replace_img">Replace Image (optional)</label><input
+              id="editProductImage" class="form-control" type="file" accept="image/*"></div>
           <div class="form-actions">
             <button class="btn-primary" type="submit" data-i18n="btn_save">Save Changes</button>
             <button class="btn-primary btn-outline" type="button" data-i18n="btn_cancel"
@@ -857,9 +889,11 @@
         <h3 style="color:#ef4444;" data-i18n="hdr_delete_title">Delete Item?</h3>
       </div>
       <div class="modal-body" style="padding-top:0;">
-        <p style="margin-bottom:20px; color:var(--text-color);" data-i18n="lbl_delete_msg">This action cannot be undone. Are you sure you want to remove this item?</p>
+        <p style="margin-bottom:20px; color:var(--text-color);" data-i18n="lbl_delete_msg">This action cannot be undone.
+          Are you sure you want to remove this item?</p>
         <div class="form-actions" style="justify-content:center;">
-          <button class="btn-primary" id="confirmDeleteBtn" style="background-color:#ef4444; border-color:#ef4444;" data-i18n="btn_delete_confirm">Yes, Delete</button>
+          <button class="btn-primary" id="confirmDeleteBtn" style="background-color:#ef4444; border-color:#ef4444;"
+            data-i18n="btn_delete_confirm">Yes, Delete</button>
           <button class="btn-primary btn-outline" data-i18n="btn_cancel"
             onclick="document.getElementById('deleteConfirmModal').classList.remove('open')">Cancel</button>
         </div>

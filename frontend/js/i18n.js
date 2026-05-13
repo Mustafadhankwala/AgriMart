@@ -244,12 +244,14 @@ const translations = {
         lbl_payment_method: "Payment",
         lbl_cash_pickup: "Cash on pickup",
         lbl_total: "Total",
+        lbl_total_weight: "Total Weight",
         lbl_cash_only: "Cash only",
         lbl_cash_payment: "Cash payment",
         lbl_cash_total: "Cash Total",
         lbl_remove: "Remove",
         msg_order_success: "Order placed successfully.",
         msg_order_fail: "Order placement failed.",
+        msg_min_order_limit: "Minimum total order must be 15kg to proceed.",
         lbl_retailer_name: "Retailer name",
         lbl_pickup_date: "Pickup date",
         lbl_slot: "Slot",
@@ -518,6 +520,8 @@ const translations = {
         lbl_stock: "स्टॉक",
         lbl_stock_count: "स्टॉक:",
         lbl_role: "भूमिका",
+        lbl_total: "कुल",
+        lbl_total_weight: "कुल वजन",
         lbl_join_date: "शामिल होने की तिथि",
         lbl_search_ph: "उत्पाद, ऑर्डर खोजें…",
         lbl_orders_count: "ऑर्डर",
@@ -741,7 +745,9 @@ const translations = {
         btn_edit: "संपादित करा",
         btn_edit_sm: "संपादित करा",
         btn_delete: "हटवा",
+        lbl_total_weight: "एकूण वजन",
         btn_mark_read: "सर्व वाचलेले म्हणून चिन्हांकित करा",
+        msg_min_order_limit: "पुढे जाण्यासाठी एकूण ऑर्डर किमान 15 किलो असणे आवश्यक आहे.",
         btn_add_task: "कार्य जोडा",
         btn_save_role: "भूमिका जतन करा",
         btn_delete_confirm: "हो, हटवा",
@@ -826,6 +832,7 @@ const translations = {
         lbl_empty_cart: "तुमची कार्ट रिकामी आहे. मार्केटप्लेस मधून शेती उत्पादने जोडा.",
         msg_order_success: "ऑर्डर यशस्वीरित्या दिली गेली.",
         msg_order_fail: "ऑर्डर देण्यात अयशस्वी.",
+        msg_min_order_limit: "पुढे जाण्यासाठी एकूण ऑर्डर किमान 15 किलो असणे आवश्यक आहे.",
         lbl_retailer_name: "किरकोळ विक्रेत्याचे नाव",
         lbl_pickup_date: "पिकअप तारीख",
         lbl_slot: "वेळ स्लॉट",
@@ -1212,7 +1219,7 @@ function applyTranslations(lang) {
         const key = el.getAttribute('data-i18n-placeholder');
         if (dict[key]) el.placeholder = dict[key];
     });
-    
+
     document.dispatchEvent(new CustomEvent('languageChanged', { detail: lang }));
 }
 
@@ -1226,7 +1233,7 @@ window.applyTranslations = applyTranslations;
 window.changeLanguage = changeLanguage;
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initI18n);
+    document.addEventListener('DOMContentLoaded', initI18n);
 } else {
-  initI18n();
+    initI18n();
 }
