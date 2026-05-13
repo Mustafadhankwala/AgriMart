@@ -39,6 +39,12 @@ const userSchema = new mongoose.Schema(
     marketArea: { type: String, default: "" },
     preferredCategory: { type: String, default: "" },
     address: { type: String, default: "" },
+
+    status: {
+      type: String,
+      enum: ["active", "pending", "rejected"],
+      default: "active",
+    },
   },
   {
     timestamps: true,

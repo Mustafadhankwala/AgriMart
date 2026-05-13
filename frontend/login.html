@@ -413,6 +413,13 @@
                 }
 
                 const payload = await response.json();
+                
+                if (payload.status === 'pending') {
+                    showMsg('regMsg', payload.message || 'Registration successful. Waiting for admin approval.', 'success');
+                    btn.textContent = t.btn_register;
+                    return;
+                }
+
                 saveAuth(payload.token, { _id: payload._id, name: payload.name, email: payload.email, role: payload.role });
                 btn.textContent = t.msg_redirecting;
                 if (payload.role === 'retailer') {

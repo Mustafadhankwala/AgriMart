@@ -24,6 +24,10 @@ const authorize = (...roles) => {
       );
     }
 
+    if (req.user.status !== "active") {
+      return next(new AppError("Account is not active", 403));
+    }
+
     next();
   };
 };

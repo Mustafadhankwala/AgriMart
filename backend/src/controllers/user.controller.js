@@ -49,7 +49,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
   const oldRole = user.role;
   const allowedUpdates = {};
-  ["name", "email", "role"].forEach((field) => {
+  ["name", "email", "role", "status"].forEach((field) => {
     if (req.body[field] !== undefined) allowedUpdates[field] = req.body[field];
   });
 

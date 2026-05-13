@@ -17,21 +17,32 @@ const registerUser = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, salt);
 
+  const adminExists = await User.findOne({ role: "admin" });
+
   const user = await User.create({
     name,
     email,
     password: hashedPassword,
     role,
+    status: role === "admin" && adminExists ? "pending" : "active",
   });
 
-  res.status(201).json({
+  const responseData = {
     success: true,
     _id: user._id,
     name: user.name,
     email: user.email,
     role: user.role,
-    token: generateToken(user._id),
-  });
+    status: user.status,
+  };
+
+  if (user.status === "active") {
+    responseData.token = generateToken(user._id);
+  } else {
+    responseData.message = "Your account is pending approval by an existing admin.";
+  }
+
+  res.status(201).json(responseData);
 });
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -39,12 +50,20 @@ const loginUser = asyncHandler(async (req, res) => {
   const user = await User.findOne({ email });
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    if (user.status === "pending") {
+      throw new AppError("Your account is pending approval by an admin.", 403);
+    }
+    if (user.status === "rejected") {
+      throw new AppError("Your account request has been rejected.", 403);
+    }
+
     return res.json({
       success: true,
       _id: user._id,
       name: user.name,
       email: user.email,
       role: user.role,
+      status: user.status,
       token: generateToken(user._id),
     });
   }

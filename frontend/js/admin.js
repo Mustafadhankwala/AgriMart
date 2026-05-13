@@ -133,81 +133,69 @@ async function initUsers() {
   list.innerHTML = users.map(u => {
     const isFarmer = u.role === 'farmer';
     const isRetailer = u.role === 'retailer';
+    const isPending = u.status === 'pending';
+    const isRejected = u.status === 'rejected';
     
-    let details = '';
-    if (isFarmer) {
-      details = `
-        <div style="font-size:11px; margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px; border-top:1px solid var(--line); padding-top:8px;">
-          <span>🚜 <strong>Farm:</strong> ${u.farmName || 'N/A'}</span>
-          <span>🌱 <strong>Crops:</strong> ${u.primaryCrops || 'N/A'}</span>
-          <span>📞 <strong>Phone:</strong> ${u.phone || 'N/A'}</span>
-          <span>📍 <strong>Address:</strong> ${u.address || 'N/A'}</span>
-        </div>
-      `;
-    } else if (isRetailer) {
-      details = `
-        <div style="font-size:11px; margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:8px; border-top:1px solid var(--line); padding-top:8px;">
-          <span>🏪 <strong>Market:</strong> ${u.marketArea || 'N/A'}</span>
-          <span>📦 <strong>Category:</strong> ${u.preferredCategory || 'N/A'}</span>
-          <span>📞 <strong>Phone:</strong> ${u.phone || 'N/A'}</span>
-          <span>📍 <strong>Address:</strong> ${u.address || 'N/A'}</span>
-        </div>
-      `;
-    } else {
-      details = `<div style="font-size:11px; margin-top:8px; border-top:1px solid var(--line); padding-top:8px;">📞 <strong>Phone:</strong> ${u.phone || 'N/A'}</div>`;
-    }
+    let statusPill = '';
+    if (isPending) statusPill = `<span class="pill" style="background:#fef3c7; color:#d97706; margin-top:5px; display:inline-block; font-size:11px;">PENDING APPROVAL</span>`;
+    else if (isRejected) statusPill = `<span class="pill" style="background:#fee2e2; color:#dc2626; margin-top:5px; display:inline-block; font-size:11px;">REJECTED</span>`;
+    else statusPill = `<span class="pill" style="background:#dcfce7; color:#16a34a; margin-top:5px; display:inline-block; font-size:11px;">ACTIVE</span>`;
 
     return `
       <div class="user-detail-card" style="display:flex; flex-direction:column; align-items:stretch; padding:24px; gap:16px; margin-bottom:20px; background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <!-- Header: Avatar, Name, Role, Actions -->
         <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
           <div style="display:flex; align-items:center; gap:15px;">
             <div class="profile-avatar" style="width:50px; height:50px; font-size:20px; background:var(--accent-soft); color:var(--accent);">${u.name[0].toUpperCase()}</div>
             <div>
               <h3 style="margin:0; font-size:18px;">${u.name}</h3>
               <p class="muted" style="margin:2px 0 0 0; font-size:13px;">${u.email}</p>
-              <span class="pill" style="margin-top:5px; display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">${u.role}</span>
+              <div style="display:flex; gap:8px;">
+                <span class="pill" style="margin-top:5px; display:inline-block; font-size:11px; text-transform:uppercase; letter-spacing:0.5px;">${u.role}</span>
+                ${statusPill}
+              </div>
             </div>
           </div>
           <div class="actions" style="display:flex; gap:10px;">
-            <button class="btn sm outline" data-i18n="btn_swap_role" onclick="changeRole('${u._id}', '${u.role}')" style="padding:6px 12px; font-size:12px;">
-              ${(window.translations && window.translations[localStorage.getItem('agriLang') || 'en']) ? window.translations[localStorage.getItem('agriLang') || 'en']['btn_swap_role'] : 'Change Role'}
-            </button>
-            <button class="btn danger sm" data-i18n="btn_delete" onclick="deleteUser('${u._id}')" style="padding:6px 12px; font-size:12px;">
-              ${(window.translations && window.translations[localStorage.getItem('agriLang') || 'en']) ? window.translations[localStorage.getItem('agriLang') || 'en']['btn_delete'] : 'Delete'}
-            </button>
+            ${isPending ? `
+              <button class="btn sm" onclick="updateUserStatus('${u._id}', 'active')" style="background:#16a34a; color:white; padding:6px 12px; font-size:12px; border:none;">Approve</button>
+              <button class="btn danger sm" onclick="updateUserStatus('${u._id}', 'rejected')" style="padding:6px 12px; font-size:12px;">Reject</button>
+            ` : isRejected ? `
+              <button class="btn sm outline" onclick="updateUserStatus('${u._id}', 'active')" style="padding:6px 12px; font-size:12px;">Re-Approve</button>
+            ` : `
+              <button class="btn sm outline" onclick="changeRole('${u._id}', '${u.role}')" style="padding:6px 12px; font-size:12px;">Change Role</button>
+            `}
+            <button class="btn danger sm" onclick="deleteUser('${u._id}')" style="padding:6px 12px; font-size:12px;">Delete</button>
           </div>
         </div>
 
-        <!-- Details Grid -->
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px; padding-top:15px; border-top:1px dashed var(--line);">
           <div style="display:flex; flex-direction:column; gap:4px;">
-            <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_contact">Contact Number</span>
+            <span class="muted" style="font-size:11px; text-transform:uppercase;">Contact Number</span>
             <span style="font-size:14px; font-weight:500;">📞 ${u.phone || 'Not provided'}</span>
           </div>
           
           ${isFarmer ? `
             <div style="display:flex; flex-direction:column; gap:4px;">
-              <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_farm_name">Farm Name</span>
+              <span class="muted" style="font-size:11px; text-transform:uppercase;">Farm Name</span>
               <span style="font-size:14px; font-weight:500;">🚜 ${u.farmName || 'N/A'}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:4px;">
-              <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_crops">Primary Crops</span>
+              <span class="muted" style="font-size:11px; text-transform:uppercase;">Primary Crops</span>
               <span style="font-size:14px; font-weight:500;">🌱 ${u.primaryCrops || 'N/A'}</span>
             </div>
           ` : isRetailer ? `
             <div style="display:flex; flex-direction:column; gap:4px;">
-              <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_market_area">Market Area</span>
+              <span class="muted" style="font-size:11px; text-transform:uppercase;">Market Area</span>
               <span style="font-size:14px; font-weight:500;">🏪 ${u.marketArea || 'N/A'}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:4px;">
-              <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_category">Interested In</span>
+              <span class="muted" style="font-size:11px; text-transform:uppercase;">Interested In</span>
               <span style="font-size:14px; font-weight:500;">📦 ${u.preferredCategory || 'All Categories'}</span>
             </div>
           ` : ''}
 
           <div style="display:flex; flex-direction:column; gap:4px; grid-column: 1 / -1;">
-            <span class="muted" style="font-size:11px; text-transform:uppercase;" data-i18n="lbl_address">Registered Address</span>
+            <span class="muted" style="font-size:11px; text-transform:uppercase;">Registered Address</span>
             <span style="font-size:13px; line-height:1.4;">📍 ${u.address || 'No address on file'}</span>
           </div>
         </div>
@@ -216,6 +204,17 @@ async function initUsers() {
   }).join("");
 
   if (window.applyTranslations) window.applyTranslations();
+}
+
+async function updateUserStatus(id, newStatus) {
+  const res = await apiRequest(`/users/${id}`, {
+    method: "PUT",
+    body: { status: newStatus }
+  });
+  if (res.ok) {
+    showToast(`User status updated to ${newStatus}`);
+    initUsers();
+  }
 }
 
 async function changeRole(id, currentRole) {
