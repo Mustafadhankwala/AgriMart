@@ -540,7 +540,7 @@
             /* ===== LOAD TESTIMONIALS FROM DATABASE ===== */
             async function loadTestimonials() {
                 try {
-                    const response = await fetch('/api/users/testimonials');
+                    const response = await fetch('http://localhost:5000/api/users/testimonials');
                     const result = await response.json();
                     if (result.success && result.data.length > 0) {
                         const names = document.querySelectorAll('.test-name');
