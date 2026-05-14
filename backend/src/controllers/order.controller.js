@@ -9,62 +9,75 @@ const { createNotification } = require("../utils/notificationHelper");
 // Body: { product: "<id>", quantity: 2 }
 // ───────────────────────────────────────────────────────────────
 const placeOrder = asyncHandler(async (req, res) => {
-  const { product: productId, quantity } = req.body;
+  const { items, phone, deliveryAddress, pickupDate, pickupSlot, note } = req.body;
 
-  const product = await Product.findById(productId);
-  if (!product) {
-    throw new AppError("Product not found", 404);
+  // Handle single product (legacy) or items array (bulk)
+  let orderItems = [];
+  if (items && Array.isArray(items)) {
+    orderItems = items;
+  } else if (req.body.product) {
+    orderItems = [{ product: req.body.product, quantity: req.body.quantity || 1 }];
   }
 
-  const updatedProduct = await Product.findOneAndUpdate(
-    { _id: productId, quantity: { $gte: quantity } },
-    { $inc: { quantity: -quantity } },
-    { returnDocument: "after" }
-  );
-
-  if (!updatedProduct) {
-    throw new AppError(
-      `Insufficient stock for "${product.name}". Available: ${product.quantity}`,
-      400
-    );
+  if (orderItems.length === 0) {
+    throw new AppError("No items found to place order", 400);
   }
 
-  let order;
-  try {
-    order = await Order.create({
+  const createdOrders = [];
+
+  for (const item of orderItems) {
+    const productId = item.id || item._id || item.product;
+    const quantity = item.count || item.quantity;
+
+    if (!productId) {
+      console.warn("Skipping item with no product id", item);
+      continue;
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      continue; // Skip or throw error? Let's skip invalid ones
+    }
+
+    if (product.quantity < quantity) {
+      throw new AppError(
+        `Insufficient stock for "${product.name}". Available: ${product.quantity}`,
+        400
+      );
+    }
+
+    // Atomically decrement stock
+    await Product.findByIdAndUpdate(productId, { $inc: { quantity: -quantity } });
+
+    const order = await Order.create({
       retailer: req.user._id,
       farmer: product.farmer,
       product: productId,
       quantity,
       totalPrice: product.price * quantity,
-      phone: req.body.phone || "",
-      deliveryAddress: req.body.deliveryAddress || "",
-      pickupDate: req.body.pickupDate || "",
-      pickupSlot: req.body.pickupSlot || "",
-      note: req.body.note || "",
+      phone: phone || "",
+      deliveryAddress: deliveryAddress || "",
+      pickupDate: pickupDate || "",
+      pickupSlot: pickupSlot || "",
+      note: note || "",
     });
-  } catch (error) {
-    await Product.findByIdAndUpdate(productId, { $inc: { quantity } });
-    throw error;
+
+    createdOrders.push(order);
+
+    // Notify Farmer
+    await createNotification(
+      product.farmer,
+      "New Order Received",
+      `You have a new order for ${quantity} ${product.unit}(s) of ${product.name} from ${req.user.name}.`,
+      "order",
+      "/pages/farmer/orders.html"
+    );
   }
-
-  const populated = await Order.findById(order._id)
-    .populate("retailer", "name email")
-    .populate("farmer", "name email")
-    .populate("product", "name category unit price image");
-
-  // Notify Farmer
-  await createNotification(
-    product.farmer,
-    "New Order Received",
-    `You have a new order for ${quantity} ${product.unit}(s) of ${product.name} from ${req.user.name}.`,
-    "order",
-    "/pages/farmer/orders.html"
-  );
 
   res.status(201).json({
     success: true,
-    data: populated,
+    count: createdOrders.length,
+    data: createdOrders,
   });
 });
 

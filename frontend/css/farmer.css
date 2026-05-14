@@ -535,3 +535,69 @@ body.dark .status-track{background:rgba(255,255,255,0.05);}
   color:var(--dark);background:var(--card);outline:none;
 }
 .msg-chat-input input:focus{border-color:var(--green);}
+
+/* ─── LOGISTICS / SHIPMENT ──────────────────────────────── */
+.shipment-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.tracking-timeline {
+  position: relative;
+  padding-left: 30px;
+  margin-top: 20px;
+}
+.tracking-timeline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10px;
+  width: 2px;
+  height: 100%;
+  background: var(--border);
+}
+.timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+}
+.timeline-dot {
+  position: absolute;
+  left: -25px;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--border);
+  border: 2px solid var(--card);
+  z-index: 1;
+}
+.timeline-item.active .timeline-dot {
+  background: var(--green);
+  box-shadow: 0 0 0 4px var(--green-bg);
+}
+.timeline-content h4 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dark);
+}
+.timeline-content p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.timeline-time {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.shiprocket-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #7422f415;
+  color: #7422f4;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+}

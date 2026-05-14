@@ -67,6 +67,9 @@ function dashboardShell(activePage, title, subtitle, content, titleKey, subtitle
       <a class="nav-link" data-nav="orders" href="orders.html">
         <span class="nav-icon">📦</span> <span data-i18n="nav_orders">${t('nav_orders', 'Orders')}</span>
       </a>
+      <a class="nav-link" data-nav="logistics" href="logistics.html">
+        <span class="nav-icon">🚚</span> <span data-i18n="nav_logistics">${t('nav_logistics', 'Logistics')}</span>
+      </a>
     `;
   }
 

@@ -980,3 +980,37 @@ body.dark .hero-panel {
 .top-actions {
     justify-self: end;
 }
+
+/* Logistics Status Pills */
+.pill.status-pending { background: #fff8ef; color: #f47b20; }
+.pill.status-accepted { background: #eaf3f7; color: #2087f4; }
+.pill.status-in-transit { background: #f3eaf7; color: #8720f4; }
+.pill.status-reached-hub { background: #eaf3f7; color: #2087f4; }
+.pill.status-out-for-delivery { background: #fff8ef; color: #f47b20; }
+.pill.status-delivered { background: #eaf7ec; color: #3a8f49; }
+.pill.status-cancelled { background: #f7eaeb; color: #cf3f33; }
+
+.table-container {
+  overflow-x: auto;
+  margin-top: 16px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 2px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.data-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}

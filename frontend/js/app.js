@@ -560,21 +560,36 @@ async function placeCartOrders(cart, details = {}) {
   return { success: true };
 }
 
-function renderCheckout() {
+async function renderCheckout() {
   const review = $("#checkoutReview");
   if (!review) return;
   const cart = getCart();
   const total = cart.reduce((sum, item) => sum + item.price * item.count, 0);
   
-  const auth = getAuth();
-  if (auth?.user) {
-    const { name, phone, address } = auth.user;
-    const nameInp = $("#buyerName");
-    const phoneInp = $("#phone");
-    const addrInp = $("#deliveryAddress");
-    if (nameInp && name) nameInp.value = name;
-    if (phoneInp && phone) phoneInp.value = phone;
-    if (addrInp && address) addrInp.value = address;
+  // Pre-fill from auth/profile
+  try {
+    const res = await apiRequest("/users/profile");
+    if (res.ok) {
+      const payload = await res.json();
+      const user = payload.data;
+      
+      const nameInp = $("#buyerName");
+      const phoneInp = $("#phone");
+      const addrInp = $("#deliveryAddress");
+      
+      if (nameInp && user.name) nameInp.value = user.name;
+      if (phoneInp && user.phone) phoneInp.value = user.phone;
+      if (addrInp && user.address) addrInp.value = user.address;
+    }
+  } catch (err) {
+    console.error("Failed to fetch profile for checkout pre-fill", err);
+    // Fallback to localStorage if API fails
+    const auth = getAuth();
+    if (auth?.user) {
+      if ($("#buyerName")) $("#buyerName").value = auth.user.name || "";
+      if ($("#phone")) $("#phone").value = auth.user.phone || "";
+      if ($("#deliveryAddress")) $("#deliveryAddress").value = auth.user.address || "";
+    }
   }
 
   review.innerHTML = cart.length ? cart.map(item => `
@@ -598,23 +613,32 @@ function renderCheckout() {
     const details = {
       phone: $("#phone")?.value.trim() || "",
       deliveryAddress: $("#deliveryAddress")?.value.trim() || "",
-      pickupDate: $("#pickupDate")?.value || "",
-      pickupSlot: $("#slot")?.value || "",
-      note: $("#note")?.value.trim() || ""
     };
 
-    const result = await placeCartOrders(cart, details);
-    if (!result.success) {
-      showToast(result.message || "Order placement failed.");
-      return;
-    }
+    const btn = form.querySelector('button[type="submit"]');
+    if (btn) btn.disabled = true;
 
-    saveCart([]);
-    if (getAuth()?.token) {
-      await apiRequest("/cart/clear", { method: "DELETE" });
+    try {
+      const response = await apiRequest("/orders", {
+        method: "POST",
+        body: { ...details, items: cart }
+      });
+      
+      if (response.ok) {
+        await apiRequest("/cart/clear", { method: "DELETE" });
+        saveCart([]);
+        showToast(t("msg_order_success", "Order placed successfully."), "green");
+        setTimeout(() => location.href = "orders.html", 1500);
+      } else {
+        const errData = await response.json().catch(() => ({}));
+        showToast(errData.message || "Failed to place order.", "red");
+      }
+    } catch (err) {
+      console.error(err);
+      showToast("An error occurred while placing order.", "red");
+    } finally {
+      if (btn) btn.disabled = false;
     }
-    showToast(t("msg_order_success", "Order placed successfully."));
-    setTimeout(() => location.href = "orders.html", 800);
   });
 }
 
@@ -877,18 +901,18 @@ async function init() {
   renderDashboard();
   renderMarketplace();
   renderCart();
-  renderCheckout();
+  await renderCheckout();
   renderFarmers();
   renderOrders();
   await renderProductDetail();
   await renderProfile();
 
   // ── Language listener ────────────────────────────────────
-  document.addEventListener('languageChanged', () => {
+  document.addEventListener('languageChanged', async () => {
     renderDashboard();
     renderMarketplace();
     renderCart();
-    renderCheckout();
+    await renderCheckout();
     renderOrders();
     renderFarmers();
     renderProductDetail();

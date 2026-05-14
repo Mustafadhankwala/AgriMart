@@ -325,7 +325,18 @@ async function updateOrderStatus(orderId, newStatus, btnEl) {
       alert(result?.message || 'Unable to update status.');
       return;
     }
-    showFarmerToast(`Order status updated to "${newStatus}".`);
+    
+    // Automatically create shipment if order is accepted
+    if (newStatus === 'accepted') {
+      await apiRequest('/shipments', {
+        method: 'POST',
+        body: { orderId }
+      });
+      showFarmerToast('Order accepted & Shiprocket shipment initiated!');
+    } else {
+      showFarmerToast(`Order status updated to "${newStatus}".`);
+    }
+    
     await loadFarmerDashboardAnalytics();
   } finally {
     btnEl.disabled = false;
@@ -1201,3 +1212,56 @@ async function markOneAsRead(id) {
     console.error('Failed to mark notification as read:', error);
   }
 }
+
+// ── LOGISTICS & SHIPMENT ───────────────────────────
+async function loadFarmerShipments() {
+  const table = document.getElementById('farmerShipmentTable');
+  if (!table) return;
+
+  try {
+    const response = await apiRequest('/shipments/my');
+    if (!response.ok) return;
+
+    const result = await response.json();
+    const shipments = result.data || [];
+
+    if (shipments.length === 0) {
+      table.innerHTML = `<tr><td colspan="5" style="padding:40px; text-align:center; color:#888;">No active shipments yet. Accept an order to start logistics.</td></tr>`;
+      return;
+    }
+
+    table.innerHTML = shipments.map(s => `
+      <tr>
+        <td><strong>${s.trackingId || 'N/A'}</strong></td>
+        <td>${s.order?.product?.name || 'Item'}</td>
+        <td>${s.retailer?.name || 'Retailer'}</td>
+        <td><span class="badge-status ${s.status === 'Delivered' ? 'badge-completed' : 'badge-process'}">${s.status}</span></td>
+        <td>
+          <button class="btn-sm edit" onclick="viewShipmentTracking('${s._id}')">Track</button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (error) {
+    console.error('Failed to load shipments:', error);
+  }
+}
+
+async function viewShipmentTracking(id) {
+  // Simple simulation for now, show a toast or a modal
+  showFarmerToast("Fetching live tracking from Shiprocket...");
+  const res = await apiRequest(`/shipments/${id}/track`);
+  if (res.ok) {
+    const payload = await res.json();
+    console.log("Tracking Data:", payload.data);
+    showFarmerToast(`Status: ${payload.data.tracking.tracking_data.shipment_status}`);
+  }
+}
+
+// Update the goTo function to load shipments when clicking logistics
+const originalGoTo = goTo;
+window.goTo = function(pageId) {
+  originalGoTo(pageId);
+  if (pageId === 'logistics') {
+    loadFarmerShipments();
+  }
+};

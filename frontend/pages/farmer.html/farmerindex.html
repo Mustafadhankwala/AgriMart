@@ -42,6 +42,10 @@
         <a href="#" onclick="event.preventDefault();goTo('team')"><i class='bx bxs-group'></i><span class="text"
             data-i18n="nav_team">Team</span></a>
       </li>
+      <li data-page="logistics">
+        <a href="#" onclick="event.preventDefault();goTo('logistics')"><i class='bx bxs-truck'></i><span class="text"
+            data-i18n="nav_logistics">Logistics</span></a>
+      </li>
     </ul>
 
     <div class="nav-section" data-i18n="nav_account">Account</div>
@@ -685,6 +689,49 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PAGE: LOGISTICS ────────────────────────────── -->
+    <div class="page" id="page-logistics">
+      <div class="page-header">
+        <div>
+          <h1 data-i18n="hdr_logistics">Logistics & Tracking</h1>
+          <ul class="breadcrumb">
+            <li><a href="#">AgriMart</a></li>
+            <li><i class='bx bx-chevron-right'></i></li>
+            <li><a class="active" href="#" data-i18n="nav_logistics">Logistics</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3 data-i18n="card_recent_orders">Recent Shipments</h3>
+          <div class="shiprocket-badge">
+            <i class='bx bxs-bolt-circle'></i> Powered by Shiprocket
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th data-i18n="lbl_shipment_id">Shipment ID</th>
+                <th data-i18n="lbl_product">Product</th>
+                <th data-i18n="lbl_retailer">Retailer</th>
+                <th data-i18n="lbl_status">Status</th>
+                <th data-i18n="lbl_action">Action</th>
+              </tr>
+            </thead>
+            <tbody id="farmerShipmentTable">
+              <tr>
+                <td colspan="5" style="padding:40px; text-align:center; color:#888;">
+                  No active shipments yet. Accept an order to start logistics.
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

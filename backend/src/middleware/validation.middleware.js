@@ -73,7 +73,13 @@ const validateProduct = (req, res, next) => {
 };
 
 const validateOrder = (req, res, next) => {
-  const { product, quantity } = req.body;
+  const { product, quantity, items } = req.body;
+
+  // If bulk ordering (items array), skip single product check
+  if (items && Array.isArray(items)) {
+    return next();
+  }
+
   const parsedQuantity = toPositiveNumber(quantity);
 
   if (!mongoose.Types.ObjectId.isValid(product)) {
