@@ -22,6 +22,10 @@ const translations = {
         nav_transactions: "Transactions",
         tagline: "India's Digital Supply Chain Hub",
         link_back: "← Back to Home",
+        lbl_shipment_status: "Shipment Status",
+        hdr_shipment_journey: "Shipment Journey",
+        lbl_live_tracking_demo: "Live Tracking (Demo Mode)",
+        btn_track_live: "Track Live",
 
         // Admin Dashboard
         hdr_system_control: "System Control",
@@ -408,6 +412,13 @@ const translations = {
         nav_orders: "ऑर्डर",
         tagline: "भारत का डिजिटल सप्लाई चेन हब",
         link_back: "← होम पर वापस जाएं",
+        nav_logistics: "लॉजिस्टिक्स",
+        hdr_logistics: "लॉजिस्टिक्स और ट्रैकिंग",
+        sub_logistics: "शिपरॉकेट के माध्यम से रियल-टाइम डिलीवरी ट्रैकिंग।",
+        lbl_shipment_status: "शिपमेंट की स्थिति",
+        hdr_shipment_journey: "शिपमेंट यात्रा",
+        lbl_live_tracking_demo: "लाइव ट्रैकिंग (डेमो मोड)",
+        btn_track_live: "लाइव ट्रैक करें",
 
         hdr_overview: "अवलोकन",
         hdr_store: "मेरी दुकान",
@@ -661,7 +672,7 @@ const translations = {
         msg_logging_in: "लॉगिन किया जा रहा है...",
         msg_redirecting: "सफलता! रीडायरेक्ट किया जा रहा है...",
         msg_creating: "खाता बनाया जा रहा है...",
-        err_fill: "कृपया सभी फ़ील्ड भरें।"
+        err_fill: "कृपया सभी फ़ील्ड भरें."
     },
     mr: {
         brand_name: "एग्रीमार्ट",
@@ -690,6 +701,13 @@ const translations = {
         nav_orders: "ऑर्डर",
         tagline: "भारताचे डिजिटल सप्लाय चेन हब",
         link_back: "← मुख्य पृष्ठावर परत जा",
+        nav_logistics: "लॉजिस्टिक्स",
+        hdr_logistics: "लॉजिस्टिक्स आणि ट्रॅकिंग",
+        sub_logistics: "शिपरॉकेटद्वारे रिअल-टाइम डिलिव्हरी ट्रॅकिंग.",
+        lbl_shipment_status: "शिपमेंटची स्थिती",
+        hdr_shipment_journey: "शिपमेंट प्रवास",
+        lbl_live_tracking_demo: "थेट ट्रॅकिंग (डेमो मोड)",
+        btn_track_live: "थेट ट्रॅक करा",
 
         hdr_overview: "आढावा",
         hdr_store: "माझे दुकान",
@@ -951,7 +969,14 @@ const translations = {
         nav_checkout: "ਚੈੱਕਆਉਟ",
         nav_orders: "ਆਰਡਰ",
         tagline: "ਭਾਰਤ ਦਾ ਡਿਜੀਟਲ ਸਪਲਾਈ ਚੇਨ ਹੱਬ",
-        link_back: "← ਹੋਮ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+        link_back: "← ਮੁੱਖ ਪੰਨੇ 'ਤੇ ਵਾਪਸ ਜਾਓ",
+        nav_logistics: "ਲੌਜਿਸਟਿਕਸ",
+        hdr_logistics: "ਲੌਜਿਸਟਿਕਸ ਅਤੇ ਟ੍ਰੈਕਿੰਗ",
+        sub_logistics: "ਸ਼ਿਪਰੌਕੇਟ ਦੁਆਰਾ ਰੀਅਲ-ਟਾਈਮ ਡਿਲੀਵਰੀ ਟ੍ਰੈਕਿੰਗ।",
+        lbl_shipment_status: "ਸ਼ਿਪਮੈਂਟ ਦੀ ਸਥਿਤੀ",
+        hdr_shipment_journey: "ਸ਼ਿਪਮੈਂਟ ਯਾਤਰਾ",
+        lbl_live_tracking_demo: "ਲਾਈਵ ਟ੍ਰੈਕਿੰਗ (ਡੈਮੋ ਮੋਡ)",
+        btn_track_live: "ਲਾਈਵ ਟ੍ਰੈਕ ਕਰੋ",
 
         hdr_overview: "ਸੰਖੇਪ",
         hdr_store: "ਮੇਰੀ ਦੁਕਾਨ",

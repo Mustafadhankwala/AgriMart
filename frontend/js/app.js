@@ -827,6 +827,94 @@ function renderOrders() {
   }));
 }
 
+async function loadRetailerShipments() {
+  const auth = getAuth();
+  if (!auth) return;
+
+  const tableBody = document.getElementById('retailerShipmentTable');
+  if (!tableBody) return;
+
+  try {
+    const res = await fetch('http://localhost:5000/api/shipments/my', {
+      headers: { 'Authorization': 'Bearer ' + auth.token }
+    });
+    const data = await res.json();
+    
+    if (data.success && data.data.length > 0) {
+      tableBody.innerHTML = data.data.map(s => {
+        const statusClass = s.status.toLowerCase().replace(/\s+/g, '-');
+        return `
+          <tr>
+            <td><strong>${s.trackingId || 'N/A'}</strong></td>
+            <td>${s.order?.product?.name || 'Item'}</td>
+            <td><span class="pill status-${statusClass}">${t('sub_' + s.status.toLowerCase(), s.status)}</span></td>
+            <td>
+              <button class="tracking-btn" onclick="trackLive('${s._id}')">${t('btn_track_live', 'Track Live')}</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    } else {
+      tableBody.innerHTML = '<tr><td colspan="4" style="padding:40px; text-align:center; color:var(--text-dim);">No active shipments found.</td></tr>';
+    }
+  } catch (err) {
+    console.error(err);
+    tableBody.innerHTML = '<tr><td colspan="4" style="padding:40px; text-align:center; color:var(--danger);">Error loading shipments.</td></tr>';
+  }
+}
+
+async function trackLive(id) {
+  const auth = getAuth();
+  if (!auth) return;
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/shipments/${id}/track`, {
+      headers: { 'Authorization': 'Bearer ' + auth.token }
+    });
+    const data = await res.json();
+    if (data.success) {
+      const tracking = data.data.tracking.tracking_data;
+      const timeline = tracking.shipment_track.map((step, i) => `
+        <div class="timeline-item ${i === 0 ? 'active' : ''}">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <h4>${step.status}</h4>
+            <p>${step.activity}</p>
+            <div class="timeline-time">${new Date(step.date).toLocaleString()}</div>
+            <div class="timeline-location">📍 ${step.location}</div>
+          </div>
+        </div>
+      `).join('');
+
+      const modalHtml = `
+        <div id="trackingModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px;">
+          <div class="panel" style="width:100%; max-width:500px; max-height:80vh; overflow-y:auto; position:relative; background:var(--surface);">
+            <button onclick="document.getElementById('trackingModal').remove()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:var(--muted);">×</button>
+            <div class="panel-head">
+              <h2>${t('hdr_shipment_journey', 'Shipment Journey')}</h2>
+            </div>
+            <div class="shiprocket-badge">${t('lbl_live_tracking_demo', 'Live Tracking (Demo Mode)')}</div>
+            <div class="tracking-timeline">
+              ${timeline}
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+  } catch (err) {
+    console.error("Tracking failed", err);
+  }
+}
+
+// Global exposure for onclick handlers
+window.trackLive = trackLive;
+
+function renderLogistics() {
+  if (document.body.dataset.page !== 'logistics') return;
+  loadRetailerShipments();
+}
+
 async function renderProductDetail() {
   const wrap = $("#productDetail");
   if (!wrap) return;
@@ -904,6 +992,7 @@ async function init() {
   await renderCheckout();
   renderFarmers();
   renderOrders();
+  renderLogistics();
   await renderProductDetail();
   await renderProfile();
 
@@ -914,6 +1003,7 @@ async function init() {
     renderCart();
     await renderCheckout();
     renderOrders();
+    renderLogistics();
     renderFarmers();
     renderProductDetail();
     renderProfile();

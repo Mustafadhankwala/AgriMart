@@ -8,193 +8,41 @@
   <link rel="icon" href="../../assets/icons/icon.ico" type="image/png">
   <script src="../../js/i18n.js"></script>
   <script src="../../js/shell.js"></script>
-  <style>
-    .shiprocket-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: #7422f415;
-      color: #7422f4;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 700;
-      margin-bottom: 10px;
-    }
-    .tracking-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-    .tracking-btn:hover {
-      opacity: 0.9;
-    }
-  </style>
 </head>
 <body data-page="logistics">
   <script>
-    window.onload = () => {
-      document.body.insertAdjacentHTML("afterbegin", dashboardShell("logistics", "Logistics & Tracking", "Monitor your incoming deliveries from farmers.", `
-        <div class="panel fade-in">
-          <div class="panel-head">
-            <h2 data-i18n="hdr_recent">Shipment Status</h2>
-            <div class="shiprocket-badge">
-              Powered by Shiprocket
-            </div>
-          </div>
-          
-          <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th data-i18n="lbl_shipment_id">Shipment ID</th>
-                  <th data-i18n="lbl_product">Product</th>
-                  <th data-i18n="lbl_status">Status</th>
-                  <th data-i18n="lbl_action">Action</th>
-                </tr>
-              </thead>
-              <tbody id="retailerShipmentTable">
-                <tr>
-                  <td colspan="4" style="padding:40px; text-align:center; color:var(--text-dim);">
-                    Loading your shipments...
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+    document.body.insertAdjacentHTML("afterbegin", dashboardShell("logistics", "Logistics & Tracking", "Monitor your incoming deliveries from farmers.", `
+      <div class="panel fade-in">
+        <div class="panel-head">
+          <h2 data-i18n="lbl_shipment_status">Shipment Status</h2>
+          <div class="shiprocket-badge">
+            Powered by Shiprocket
           </div>
         </div>
-      `, "hdr_logistics", "sub_logistics", "nav_logistics"));
-
-      loadRetailerShipments();
-    };
-
-    // Logic to load shipments
-    async function loadRetailerShipments() {
-      const auth = JSON.parse(localStorage.getItem('agriAuthToken'));
-      if (!auth) return;
-
-      try {
-        const res = await fetch('http://localhost:5000/api/shipments/my', {
-          headers: { 'Authorization': 'Bearer ' + auth.token }
-        });
-        const data = await res.json();
-        const tableBody = document.getElementById('retailerShipmentTable');
         
-        if (data.success && data.data.length > 0) {
-          tableBody.innerHTML = data.data.map(s => {
-            const statusClass = s.status.toLowerCase().replace(/\s+/g, '-');
-            return `
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
               <tr>
-                <td><strong>${s.trackingId || 'N/A'}</strong></td>
-                <td>${s.order?.product?.name || 'Item'}</td>
-                <td><span class="pill status-${statusClass}">${s.status}</span></td>
-                <td>
-                  <button class="tracking-btn" onclick="trackLive('${s._id}')">Track Live</button>
+                <th data-i18n="lbl_shipment_id">Shipment ID</th>
+                <th data-i18n="lbl_product">Product</th>
+                <th data-i18n="lbl_status">Status</th>
+                <th data-i18n="lbl_action">Action</th>
+              </tr>
+            </thead>
+            <tbody id="retailerShipmentTable">
+              <tr>
+                <td colspan="4" style="padding:40px; text-align:center; color:var(--text-dim);">
+                  Loading your shipments...
                 </td>
               </tr>
-            `;
-          }).join('');
-        } else {
-          tableBody.innerHTML = '<tr><td colspan="4" style="padding:40px; text-align:center; color:var(--text-dim);">No active shipments found.</td></tr>';
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    }
-
-    async function trackLive(id) {
-      const auth = JSON.parse(localStorage.getItem('agriAuthToken'));
-      const res = await fetch(`http://localhost:5000/api/shipments/${id}/track`, {
-        headers: { 'Authorization': 'Bearer ' + auth.token }
-      });
-      const data = await res.json();
-      if (data.success) {
-        const tracking = data.data.tracking.tracking_data;
-        const timeline = tracking.shipment_track.map((step, i) => `
-          <div class="timeline-item ${i === 0 ? 'active' : ''}">
-            <div class="timeline-dot"></div>
-            <div class="timeline-content">
-              <h4>${step.status}</h4>
-              <p>${step.activity}</p>
-              <div class="timeline-time">${new Date(step.date).toLocaleString()}</div>
-              <div class="timeline-location">📍 ${step.location}</div>
-            </div>
-          </div>
-        `).join('');
-
-        const modalHtml = `
-          <div id="trackingModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px;">
-            <div class="panel" style="width:100%; max-width:500px; max-height:80vh; overflow-y:auto; position:relative; background:var(--surface);">
-              <button onclick="document.getElementById('trackingModal').remove()" style="position:absolute; top:15px; right:15px; background:none; border:none; font-size:24px; cursor:pointer; color:var(--muted);">×</button>
-              <div class="panel-head">
-                <h2>Shipment Journey</h2>
-              </div>
-              <div class="shiprocket-badge">Live Tracking (Demo Mode)</div>
-              <div class="tracking-timeline">
-                ${timeline}
-              </div>
-            </div>
-          </div>
-        `;
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-      }
-    }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `, "hdr_logistics", "sub_logistics", "nav_logistics"));
   </script>
 
-  <style>
-    .tracking-timeline {
-      position: relative;
-      padding-left: 30px;
-      margin-top: 20px;
-    }
-    .tracking-timeline::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 10px;
-      width: 2px;
-      height: 100%;
-      background: var(--line);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 24px;
-    }
-    .timeline-dot {
-      position: absolute;
-      left: -25px;
-      top: 4px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--line);
-      border: 2px solid var(--surface);
-      z-index: 1;
-    }
-    .timeline-item.active .timeline-dot {
-      background: var(--primary);
-      box-shadow: 0 0 0 4px var(--primary-soft);
-    }
-    .timeline-content h4 {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .timeline-content p {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-    .timeline-time, .timeline-location {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-  </style>
+  <script src="../../js/app.js"></script>
 </body>
 </html>
